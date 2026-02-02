@@ -923,5 +923,54 @@ stratumweight 0`
         command: 'touch /home/shared-dir/test.txt && ls -ltr /home/shared-dir/test.txt'
       }
     ]
+  },
+  {
+    id: 'tar-archiving-basics',
+    category: 'File Management',
+    title: 'Tar Archiving & Compression',
+    titleKo: 'Tar 아카이브 및 압축 실습',
+    description: `## Task: Master the \`tar\` command for archiving and compression.
+
+The \`tar\` (tape archive) command is essential for creating, listing, and extracting archives in Linux.
+
+### Key Options:
+- \`-c\`: Create an archive
+- \`-x\`: Extract an archive
+- \`-v\`: Verbose mode (show files being processed)
+- \`-f\`: Specify the filename of the archive
+- \`-z\`: Use \`gzip\` compression (\`.tar.gz\`)
+- \`-j\`: Use \`bzip2\` compression (\`.tar.bz2\`)`,
+    descriptionKo: 'Gzip 및 Bzip2 방식을 사용하여 아카이브 생성 및 해제하는 방법을 실습하시오.',
+    scenarios: [
+      'Gzip Archive: /root/test1.tar.gz',
+      'Bzip2 Archive: /root/test2.tar.bz2',
+      'Source: /var/log/ files'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create a gzip compressed archive of /var/log/ in /root/test1.tar.gz',
+        instructionKo: '/var/log/ 디렉토리를 gzip 방식으로 압축하여 /root/test1.tar.gz 아카이브를 생성하시오.',
+        command: 'tar cvfz /root/test1.tar.gz /var/log/*'
+      },
+      {
+        id: 2,
+        instruction: 'Create a bzip2 compressed archive of /var/log/ in /root/test2.tar.bz2',
+        instructionKo: '/var/log/ 디렉토리를 bzip2 방식으로 압축하여 /root/test2.tar.bz2 아카이브를 생성하시오.',
+        command: 'tar cvfj /root/test2.tar.bz2 /var/log/*'
+      },
+      {
+        id: 3,
+        instruction: 'Extract the gzip archive /root/test1.tar.gz',
+        instructionKo: '/root/test1.tar.gz 아카이브의 압축을 해제하시오.',
+        command: 'tar zxvf /root/test1.tar.gz'
+      },
+      {
+        id: 4,
+        instruction: 'Extract the bzip2 archive /root/test2.tar.bz2',
+        instructionKo: '/root/test2.tar.bz2 아카이브의 압축을 해제하시오.',
+        command: 'tar jxvf /root/test2.tar.bz2'
+      }
+    ]
   }
 ];
