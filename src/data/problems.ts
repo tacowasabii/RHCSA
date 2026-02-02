@@ -679,5 +679,191 @@ stratumweight 0`
         command: 'systemctl enable chronyd-restricted.service'
       }
     ]
+  },
+  {
+    id: 'podman-image-building',
+    category: 'Server A',
+    title: 'Podman: Build Image',
+    titleKo: 'Podman: 이미지 빌드 실습',
+    description: `## Task: Create an image named \`my_image:1.0\` from a remote YAML file.
+
+- The URL for the definition file is: \`https://raw.githubusercontent.com/anishrana2001/Openshift/refs/heads/main/RHCSA-V.9.3/image_08-01.yaml\`
+- You must login to the registry: \`registry.lab.example.com:5000\`
+- Registry credentials: User: \`student\`, Password: \`redhat\``,
+    descriptionKo: '원격 YAML 파일을 사용하여 my_image:1.0 이미지를 생성하고 레지스트리에 로그인하는 과정을 실습하시오.',
+    scenarios: [
+      'Registry: registry.lab.example.com:5000',
+      'Image Name: my_image:1.0',
+      'YAML URL: https://raw.githubusercontent.com/anishrana2001/.../image_08-01.yaml'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Login to the private registry',
+        instructionKo: '프라이빗 레지스트리에 로그인하시오.',
+        command: 'podman login registry.lab.example.com:5000'
+      },
+      {
+        id: 2,
+        instruction: 'Download the image definition file (YAML)',
+        instructionKo: '이미지 정의 파일(YAML)을 다운로드하시오.',
+        command: 'wget https://raw.githubusercontent.com/anishrana2001/Openshift/refs/heads/main/RHCSA-V.9.3/image_08-01.yaml'
+      },
+      {
+        id: 3,
+        instruction: 'Build the image using the downloaded file',
+        instructionKo: '다운로드한 파일을 사용하여 이미지를 빌드하시오.',
+        command: 'podman build -t my_image:1.0 -f image_08-01.yaml'
+      },
+      {
+        id: 4,
+        instruction: 'Verify the newly created image',
+        instructionKo: '생성된 이미지를 확인하십시오.',
+        command: 'podman images'
+      }
+    ]
+  },
+  {
+    id: 'podman-container-basics',
+    category: 'Server A',
+    title: 'Podman: Container & Volumes',
+    titleKo: 'Podman: 컨테이너 및 볼륨 설정',
+    description: `## Task 1: Create a container named \`mywebserverpod1\`.
+- Use the image \`my_image:1.0\` created previously.
+- Identify the container's IP address and save it to \`/opt/container/question1.txt\`.
+
+## Task 2: Create a container named \`mywebserverpod3\`.
+- Use the image \`registry.lab.example.com:5000/rhel10/httpd-24\`.
+- Mount \`/opt/dir11\` to \`/opt/audio1\` (Persistent).
+- Mount \`/opt/dir22\` to \`/opt/video2\` (Persistent).`,
+    descriptionKo: '컨테이너 생성, IP 확인, 그리고 다중 볼륨 마운트 설정을 실습하시오.',
+    scenarios: [
+      'Image 1: my_image:1.0',
+      'Image 2: registry.lab.example.com:5000/rhel10/httpd-24',
+      'IP Save Path: /opt/container/question1.txt',
+      'Mounts: /opt/dir11 -> /opt/audio1, /opt/dir22 -> /opt/video2'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Run mywebserverpod1 container using my_image:1.0',
+        instructionKo: 'my_image:1.0 이미지를 사용하여 mywebserverpod1 컨테이너를 실행하시오.',
+        command: 'podman run -d --name mywebserverpod1 my_image:1.0'
+      },
+      {
+        id: 2,
+        instruction: 'Identify the IP address of mywebserverpod1',
+        instructionKo: '컨테이너의 IP 주소를 확인하시오.',
+        command: 'podman inspect mywebserverpod1 | grep IPAddress'
+      },
+      {
+        id: 3,
+        instruction: 'Save the IP address to /opt/container/question1.txt',
+        instructionKo: '확인된 IP 주소를 /opt/container/question1.txt에 저장하시오.',
+        command: 'echo "10.88.0.X" > /opt/container/question1.txt'
+      },
+      {
+        id: 4,
+        instruction: 'Run mywebserverpod3 with persistent volume mounts',
+        instructionKo: '두 개의 볼륨 마운트를 포함하여 mywebserverpod3 컨테이너를 실행하시오.',
+        command: 'podman run -d --name mywebserverpod3 -v /opt/dir11:/opt/audio1:Z -v /opt/dir22:/opt/video2:Z registry.lab.example.com:5000/rhel10/httpd-24'
+      }
+    ]
+  },
+  {
+    id: 'podman-systemd-service',
+    category: 'Server A',
+    title: 'Podman: Rootless Systemd Service',
+    titleKo: 'Podman: 루트리스 시스템드 서비스 설정',
+    description: `## Task: Configure a rootless container as a system start-up service.
+
+- Create directories \`/opt/dir10\` and \`/opt/dir20\` with owner \`student\`.
+- Enable user lingering for \`student\`.
+- Run a container named \`mycontainer12\` with volumes mounted to \`/opt/audio\` and \`/opt/video\`.
+- Use image \`registry.lab.example.com:5000/rhel10/httpd-24\`.
+- Generate and enable a systemd user service named \`mycontainer2.service\`.
+- The container must restart automatically on reboot.`,
+    descriptionKo: 'Rootless 컨테이너를 시스템 서비스로 등록하여 부팅 시 자동 실행되도록 설정하시오.',
+    scenarios: [
+      'User: student',
+      'Lingering: loginctl enable-linger student',
+      'Container Name: mycontainer12',
+      'Mounts: /opt/dir10 -> /opt/audio, /opt/dir20 -> /opt/video',
+      'Service Name: mycontainer2.service'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create the host directories for volume mounting',
+        instructionKo: '볼륨 마운트를 위한 호스트 디렉토리들을 생성하시오.',
+        command: 'mkdir /opt/dir10 /opt/dir20'
+      },
+      {
+        id: 2,
+        instruction: 'Change ownership of the directories to the student user',
+        instructionKo: '디렉토리의 소유권을 student 사용자로 변경하시오.',
+        command: 'chown student:student /opt/dir10 /opt/dir20'
+      },
+      {
+        id: 3,
+        instruction: 'Set full permissions for the directories',
+        instructionKo: '디렉토리에 모든 권한(777)을 부여하시오.',
+        command: 'chmod 777 /opt/dir10 /opt/dir20'
+      },
+      {
+        id: 4,
+        instruction: 'Enable user lingering for student',
+        instructionKo: 'student 사용자에 대해 lingering을 활성화하시오.',
+        command: 'loginctl enable-linger student'
+      },
+      {
+        id: 5,
+        instruction: 'Login to the registry as the student user',
+        instructionKo: 'student 사용자로 레지스트리에 로그인하시오.',
+        command: 'podman login registry.lab.example.com:5000'
+      },
+      {
+        id: 6,
+        instruction: 'Run the container with persistent volumes',
+        instructionKo: '영구 볼륨을 사용하여 컨테이너를 실행하시오.',
+        command: 'podman run -d --name mycontainer12 -v /opt/dir10:/opt/audio:Z -v /opt/dir20:/opt/video:Z registry.lab.example.com:5000/rhel10/httpd-24'
+      },
+      {
+        id: 7,
+        instruction: 'Navigate to the systemd user configuration directory',
+        instructionKo: '시스템드 사용자 설정 디렉토리로 이동하시오. (없을 시 생성)',
+        command: 'mkdir -p ~/.config/systemd/user && cd ~/.config/systemd/user'
+      },
+      {
+        id: 8,
+        instruction: 'Generate the systemd service file from the container',
+        instructionKo: '실행 중인 컨테이너를 기반으로 시스템드 서비스 파일을 생성하시오.',
+        command: 'podman generate systemd --name mycontainer12 --new --files'
+      },
+      {
+        id: 9,
+        instruction: 'Reload the user systemd daemon',
+        instructionKo: '사용자 시스템드 데몬을 재로드하시오.',
+        command: 'systemctl --user daemon-reload'
+      },
+      {
+        id: 10,
+        instruction: 'Enable the container service',
+        instructionKo: '컨테이너 서비스를 활성화(enable) 하시오.',
+        command: 'systemctl --user enable container-mycontainer12.service'
+      },
+      {
+        id: 11,
+        instruction: 'Start the container service',
+        instructionKo: '컨테이너 서비스를 시작(start) 하시오.',
+        command: 'systemctl --user start container-mycontainer12.service'
+      },
+      {
+        id: 12,
+        instruction: 'Verify the service status',
+        instructionKo: '서비스 상태를 최종 확인하시오.',
+        command: 'systemctl --user status container-mycontainer12.service'
+      }
+    ]
   }
 ];
