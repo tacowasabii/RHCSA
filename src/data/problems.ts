@@ -475,5 +475,56 @@ gpgcheck = false`
         command: 'cat /root/question6-find-output'
       }
     ]
+  },
+  {
+    id: 'grep-command-basics',
+    category: 'Server A',
+    title: 'Grep Command Basics',
+    titleKo: 'grep 명령어 기초',
+    description: `## Question 1: Find the string \`err\` from \`/var/log/messages\` file and save the output in the \`/root/err.log\` file.
+
+## Question 2: Find all lines that do NOT contain the string \`warning\` in \`/var/log/messages\`.
+
+## Question 3: Find the string \`err\` case-insensitively (e.g., \`err\`, \`ERR\`, \`Err\`) from \`/var/log/messages\` and save in \`/root/err.log\`.
+
+## Question 4: Find the string \`err\` along with line number from \`/var/log/messages\` and save in \`/root/err.log\`.`,
+    descriptionKo: '/var/log/messages 파일에서 특정 문자열을 검색하고 결과를 처리하는 다양한 grep 명령어를 연습하시오.',
+    scenarios: [
+      'File to search: /var/log/messages',
+      'Target string: err',
+      'Output path: /root/err.log'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Find "err" in /var/log/messages and save to /root/err.log',
+        instructionKo: '/var/log/messages에서 "err"를 찾아 /root/err.log에 저장하시오.',
+        command: 'grep "err" /var/log/messages > /root/err.log'
+      },
+      {
+        id: 2,
+        instruction: 'Find lines NOT containing "warning" in /var/log/messages',
+        instructionKo: '/var/log/messages에서 "warning"이 포함되지 않은 행들을 찾으시오.',
+        command: 'grep -v "warning" /var/log/messages'
+      },
+      {
+        id: 3,
+        instruction: 'Find "err" case-insensitively in /var/log/messages and save to /root/err.log',
+        instructionKo: '/var/log/messages에서 대소문자 구분 없이 "err"를 찾아 /root/err.log에 저장하시오.',
+        command: 'grep -i "err" /var/log/messages > /root/err.log'
+      },
+      {
+        id: 4,
+        instruction: 'Find "err" with line numbers in /var/log/messages and save to /root/err.log',
+        instructionKo: '/var/log/messages에서 행 번호와 함께 "err"를 찾아 /root/err.log에 저장하시오.',
+        command: 'grep -n "err" /var/log/messages > /root/err.log'
+      },
+      {
+        id: 5,
+        instruction: 'Verify the output file',
+        instructionKo: '생성된 결과 파일을 확인하시오.',
+        command: 'cat /root/err.log'
+      }
+    ]
   }
 ];
