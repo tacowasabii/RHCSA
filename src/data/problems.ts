@@ -599,5 +599,85 @@ gpgcheck = false`
         command: 'ls -ltr /home/guest/production5'
       }
     ]
+  },
+  {
+    id: 'ntp-configuration',
+    category: 'Server A',
+    title: 'Configure NTP Sync',
+    titleKo: 'NTP 시간 동기화 설정',
+    description: `## Task: You need to sync \`servera\` with ntp \`classroom.example.com\`
+
+- Use the \`chronyd\` service to manage time synchronization.
+- Configure the system clock to use NTP.
+- Add \`server classroom.example.com iburst\` to the configuration and ensure other external servers are commented out.
+- Ensure the service is restarted and enabled.`,
+    descriptionKo: 'servera를 classroom.example.com NTP 서버와 동기화하도록 설정하시오.',
+    scenarios: [
+      'NTP Server: classroom.example.com',
+      'Service: chronyd.service',
+      'Config File: /etc/chrony.conf',
+      'Reference: iburst option'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Check the status of NTP service (chronyd)',
+        instructionKo: 'chronyd 서비스의 상태를 확인하시오.',
+        command: 'systemctl status chronyd.service'
+      },
+      {
+        id: 2,
+        instruction: 'Set the system clock to use NTP',
+        instructionKo: '시스템 시계가 NTP를 사용하도록 설정하시오.',
+        command: 'timedatectl set-ntp true'
+      },
+      {
+        id: 3,
+        instruction: 'Open /etc/chrony.conf with vi',
+        instructionKo: '/etc/chrony.conf 파일을 vi 에디터로 여시오.',
+        command: 'vi /etc/chrony.conf'
+      },
+      {
+        id: 4,
+        instruction: 'Update the ntp server in /etc/chrony.conf (Comment out 172.25.254.254 and add classroom.example.com)',
+        instructionKo: '/etc/chrony.conf 파일에서 기존 서버를 주석 처리하고 classroom.example.com을 추가하시오.',
+        isMultiLine: true,
+        initialValue: `#server 0.rhel.pool.ntp.org iburst
+#server 1.rhel.pool.ntp.org iburst
+#server 2.rhel.pool.ntp.org iburst
+#server 3.rhel.pool.ntp.org iburst
+server 172.25.254.254 iburst
+
+# Ignore stratum in source selection.
+stratumweight 0`,
+        command: `#server 0.rhel.pool.ntp.org iburst
+#server 1.rhel.pool.ntp.org iburst
+#server 2.rhel.pool.ntp.org iburst
+#server 3.rhel.pool.ntp.org iburst
+#server 172.25.254.254 iburst
+server classroom.example.com iburst
+
+# Ignore stratum in source selection.
+stratumweight 0`
+      },
+      {
+        id: 5,
+        instruction: 'Restart the NTP service',
+        instructionKo: 'chronyd 서비스를 재시작하시오.',
+        command: 'systemctl restart chronyd.service'
+      },
+      {
+        id: 6,
+        instruction: 'Verify the NTP status and source',
+        instructionKo: 'NTP 동기화 상태와 소스를 확인하시오.',
+        command: 'systemctl status chronyd.service'
+      },
+      {
+        id: 7,
+        instruction: 'Enable the chronyd-restricted service',
+        instructionKo: 'chronyd-restricted 서비스를 활성화(enable) 하시오.',
+        command: 'systemctl enable chronyd-restricted.service'
+      }
+    ]
   }
 ];

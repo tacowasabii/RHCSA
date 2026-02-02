@@ -12,11 +12,13 @@ const ProblemPage: React.FC = () => {
   
   // State
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(problem?.steps[0]?.initialValue || '');
   const [error, setError] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+
 
   // Focus input on step change
   useEffect(() => {
@@ -77,10 +79,12 @@ const ProblemPage: React.FC = () => {
 
     if (isCorrect) {
       // Correct
-      setInputValue('');
+      const nextIndex = currentStepIndex + 1;
+      const nextStep = problem.steps[nextIndex];
+      setInputValue(nextStep?.initialValue || '');
       setError(false);
       setShowAnswer(false);
-      setCurrentStepIndex(prev => prev + 1);
+      setCurrentStepIndex(nextIndex);
     } else {
       // Incorrect
       setError(true);
