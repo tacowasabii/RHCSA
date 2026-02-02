@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { problems } from '../data/problems';
 import { ArrowLeft, CheckCircle, AlertCircle, Eye, EyeOff, Terminal } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ProblemPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,13 +16,16 @@ const ProblemPage: React.FC = () => {
   const [error, setError] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Focus input on step change
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (problem?.steps[currentStepIndex]?.isMultiLine) {
+      textareaRef.current?.focus();
+    } else {
+      inputRef.current?.focus();
     }
-  }, [currentStepIndex]);
+  }, [currentStepIndex, problem?.steps]);
 
   if (!problem) {
     return (
@@ -37,19 +42,40 @@ const ProblemPage: React.FC = () => {
   const isComplete = currentStepIndex >= problem.steps.length;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !currentStep?.isMultiLine) {
       checkAnswer();
     }
+    // For multiline, allow Ctrl+Enter to submit
+    if (e.key === 'Enter' && e.ctrlKey && currentStep?.isMultiLine) {
+       checkAnswer();
+    }
+  };
+
+  const normalizeMultiline = (str: string) => {
+    return str
+      .split('\n')
+      .map(line => line.trimEnd())
+      .filter(line => line !== '') // Optional: remove empty lines if that's preferred
+      .join('\n')
+      .trim();
   };
 
   const checkAnswer = () => {
     if (!currentStep) return;
 
-    // Normalize comparison (trim spaces)
-    const normalizedInput = inputValue.trim();
-    const normalizedCommand = currentStep.command.trim();
+    let isCorrect = false;
 
-    if (normalizedInput === normalizedCommand) {
+    if (currentStep.isMultiLine) {
+      const normalizedInput = normalizeMultiline(inputValue);
+      const normalizedTarget = normalizeMultiline(currentStep.command);
+      isCorrect = normalizedInput === normalizedTarget;
+    } else {
+      const normalizedInput = inputValue.trim();
+      const normalizedCommand = currentStep.command.trim();
+      isCorrect = normalizedInput === normalizedCommand;
+    }
+
+    if (isCorrect) {
       // Correct
       setInputValue('');
       setError(false);
@@ -82,16 +108,43 @@ const ProblemPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="max-w-[1732px] mx-auto px-4 md:px-8 py-8 lg:grid lg:grid-cols-[1000px_1fr] lg:gap-8 lg:items-start justify-center">
         
-        {/* Left Panel: Scenario & Info */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 sticky top-24 shadow-sm">
+        {/* Scenario & Info */}
+        <div className="w-full lg:max-w-[1000px] space-y-6 lg:sticky lg:top-24 mb-8 lg:mb-0">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
             <h1 className="text-2xl font-bold text-slate-900 mb-2">{problem.title}</h1>
             {problem.titleKo && <h2 className="text-xl font-medium text-slate-500 mb-4">{problem.titleKo}</h2>}
             
-            <p className="text-slate-600 mb-2">{problem.description}</p>
-            {problem.descriptionKo && <p className="text-slate-500 text-sm mb-6">{problem.descriptionKo}</p>}
+            <div className="text-slate-600 mb-6 prose prose-slate max-w-none">
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h1: ({...props}) => <h1 className="text-xl font-bold text-slate-900 mt-6 mb-4 border-b pb-2" {...props} />,
+                  h2: ({...props}) => <h2 className="text-lg font-bold text-slate-800 mt-5 mb-3" {...props} />,
+                  ul: ({...props}) => <ul className="list-disc pl-5 my-4 space-y-2" {...props} />,
+                  ol: ({...props}) => <ol className="list-decimal pl-5 my-4 space-y-2" {...props} />,
+                  li: ({...props}) => <li className="text-slate-700" {...props} />,
+                  code: ({...props}) => <code className="bg-gray-100 text-slate-800 px-1.5 py-0.5 rounded font-mono text-sm border border-gray-200" {...props} />,
+                  p: ({...props}) => <p className="mb-4 leading-relaxed whitespace-pre-wrap" {...props} />,
+                }}
+              >
+                {problem.description}
+              </ReactMarkdown>
+            </div>
+
+            {problem.descriptionKo && (
+              <div className="text-slate-500 text-sm mb-6 border-t pt-4">
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({...props}) => <p className="mb-2 whitespace-pre-wrap" {...props} />,
+                  }}
+                >
+                  {problem.descriptionKo}
+                </ReactMarkdown>
+              </div>
+            )}
             
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
@@ -119,8 +172,8 @@ const ProblemPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Panel: Interactive Terminal Steps */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* Interactive Terminal Steps */}
+        <div className="w-full lg:max-w-[700px] space-y-6">
           {problem.steps.map((step, index) => {
             const isPast = index < currentStepIndex;
             const isCurrent = index === currentStepIndex;
@@ -172,41 +225,58 @@ const ProblemPage: React.FC = () => {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        <div className={`
-                          relative flex items-center bg-white border rounded-lg overflow-hidden transition-colors
-                          ${error ? 'border-red-500' : 'border-gray-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100'}
-                        `}>
-                          <div className="pl-4 text-slate-400">
-                             <Terminal size={18} />
+                        <div className="flex w-full">
+                          <div className={`
+                            relative flex items-start bg-white border rounded-lg overflow-hidden transition-colors w-full
+                            ${error ? 'border-red-500' : 'border-gray-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100'}
+                          `}>
+                            <div className="pl-4 pt-3.5 text-slate-400">
+                               <Terminal size={18} />
+                            </div>
+                            {step.isMultiLine ? (
+                              <textarea
+                                ref={isCurrent ? textareaRef : null}
+                                value={inputValue}
+                                onChange={(e) => {
+                                  setInputValue(e.target.value);
+                                  setError(false);
+                                }}
+                                onKeyDown={handleKeyDown}
+                                className="w-full bg-transparent border-none focus:ring-0 text-slate-900 font-mono py-3 px-4 placeholder-slate-400 outline-none min-h-[150px] resize-y"
+                                placeholder="Enter file content here... (Ctrl+Enter to submit)"
+                                spellCheck="false"
+                              />
+                            ) : (
+                              <input
+                                ref={isCurrent ? inputRef : null}
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => {
+                                  setInputValue(e.target.value);
+                                  setError(false);
+                                }}
+                                onKeyDown={handleKeyDown}
+                                className="w-full bg-transparent border-none focus:ring-0 text-slate-900 font-mono py-3 px-4 placeholder-slate-400 outline-none"
+                                placeholder="Type command..."
+                                autoComplete="off"
+                                autoCorrect="off"
+                                autoCapitalize="off"
+                                spellCheck="false"
+                              />
+                            )}
+                            <button 
+                               onClick={checkAnswer}
+                               className={`mr-2 my-2 p-2 bg-gray-100 hover:bg-gray-200 text-slate-600 rounded-md text-sm font-medium transition-colors cursor-pointer ${step.isMultiLine ? 'self-end' : ''}`}
+                            >
+                              Enter
+                            </button>
                           </div>
-                          <input
-                            ref={isCurrent ? inputRef : null}
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => {
-                              setInputValue(e.target.value);
-                              setError(false);
-                            }}
-                            onKeyDown={handleKeyDown}
-                            className="w-full bg-transparent border-none focus:ring-0 text-slate-900 font-mono py-3 px-4 placeholder-slate-400 outline-none"
-                            placeholder="Type command here..."
-                            autoComplete="off"
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                          />
-                          <button 
-                             onClick={checkAnswer}
-                             className="mr-2 p-2 bg-gray-100 hover:bg-gray-200 text-slate-600 rounded-md text-sm font-medium transition-colors cursor-pointer"
-                          >
-                            Enter
-                          </button>
                         </div>
 
                         {error && (
                           <div className="flex items-center text-red-500 text-sm animate-bounce">
                             <AlertCircle size={16} className="mr-2" />
-                            Incorrect command. Try again or check the answer.
+                            Incorrect.
                           </div>
                         )}
 
@@ -216,12 +286,12 @@ const ProblemPage: React.FC = () => {
                             className="flex items-center text-sm text-slate-500 hover:text-blue-600 transition-colors"
                           >
                              {showAnswer ? <EyeOff size={16} className="mr-2"/> : <Eye size={16} className="mr-2"/>}
-                             {showAnswer ? 'Hide Answer' : 'Show Answer'}
+                             {showAnswer ? 'Hide' : 'Show'}
                           </button>
                         </div>
 
                         {showAnswer && (
-                           <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono text-slate-600 break-all select-all shadow-inner">
+                           <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono text-slate-600 break-all select-all shadow-inner w-full">
                              {step.command}
                            </div>
                         )}
@@ -239,8 +309,7 @@ const ProblemPage: React.FC = () => {
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600">
                 <CheckCircle size={32} />
               </div>
-              <h2 className="text-3xl font-bold text-emerald-900">Scenario Completed!</h2>
-              <p className="text-emerald-700">You have successfully configured the network settings.</p>
+              <h2 className="text-3xl font-bold text-emerald-900">Completed!</h2>
               <button 
                 onClick={() => navigate('/')}
                 className="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-colors shadow-lg shadow-emerald-200"

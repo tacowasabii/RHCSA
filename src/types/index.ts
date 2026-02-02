@@ -5,6 +5,7 @@ export interface Step {
   command: string;
   hint?: string;
   output?: string; // Optional simulated output to show after success
+  isMultiLine?: boolean; // If true, rendering a textarea instead of input
 }
 
 export interface Problem {
