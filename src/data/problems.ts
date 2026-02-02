@@ -865,5 +865,63 @@ stratumweight 0`
         command: 'systemctl --user status container-mycontainer12.service'
       }
     ]
+  },
+  {
+    id: 'shared-directory-permissions',
+    category: 'User & Group',
+    title: 'Collaborative Shared Directory',
+    titleKo: '공유 디렉토리 및 특수 권한(SGID) 설정',
+    description: `## Task: Create a shared directory for the admin group.
+
+- Create a shared directory named \`/home/shared-dir\`.
+- Set the group owner of the directory to \`admin\`.
+- Ensure members of the \`admin\` group have full rights (\`rwx\`).
+- Ensure others have no rights at all (\`---\`).
+- Configure the directory so that any new files created inside automatically inherit the \`admin\` group ownership.`,
+    descriptionKo: 'admin 그룹을 위한 공유 디렉토리를 생성하고, 그룹 권한 및 SGID를 설정하시오.',
+    scenarios: [
+      'Directory: /home/shared-dir',
+      'Group Owner: admin',
+      'Permissions: group:rwx, other:---',
+      'Inheritance: SGID bit (Set-Group-ID)'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create the shared directory',
+        instructionKo: '공유 디렉토리를 생성하시오.',
+        command: 'mkdir /home/shared-dir'
+      },
+      {
+        id: 2,
+        instruction: 'Change the group ownership to admin',
+        instructionKo: '디렉토리의 그룹 소유권을 admin으로 변경하시오.',
+        command: 'chgrp admin /home/shared-dir'
+      },
+      {
+        id: 3,
+        instruction: 'Set group permissions to rwx and others to none',
+        instructionKo: '그룹에는 rwx 권한을, 그 외 사용자에게는 아무 권한도 주지 마시오.',
+        command: 'chmod 770 /home/shared-dir'
+      },
+      {
+        id: 4,
+        instruction: 'Set the SGID bit for group ownership inheritance',
+        instructionKo: '파일 생성 시 그룹 소유권이 상속되도록 SGID를 설정하시오.',
+        command: 'chmod g+s /home/shared-dir'
+      },
+      {
+        id: 5,
+        instruction: 'Verify directory permissions and SGID',
+        instructionKo: '디렉토리의 권한과 SGID 설정을 확인하시오.',
+        command: 'ls -ld /home/shared-dir'
+      },
+      {
+        id: 6,
+        instruction: 'Test inheritance by creating a file',
+        instructionKo: '디렉토리 내에 파일을 생성하여 그룹 상속을 확인하시오.',
+        command: 'touch /home/shared-dir/test.txt && ls -ltr /home/shared-dir/test.txt'
+      }
+    ]
   }
 ];
