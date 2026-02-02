@@ -526,5 +526,78 @@ gpgcheck = false`
         command: 'cat /root/err.log'
       }
     ]
+  },
+  {
+    id: 'autofs-configuration',
+    category: 'Server A',
+    title: 'Configure AutoFS',
+    titleKo: 'AutoFS 설정',
+    description: `## Task: Configure AutoFS on \`servera\` to automatically mount the home directory for \`production5\`.
+
+- Install the necessary package for AutoFS.
+- Ensure the service is enabled and started.
+- Configure the master map file \`/etc/auto.master\` to manage \`/home/guest\` using \`/etc/auto.misc\`.
+- Configure the indirect map file \`/etc/auto.misc\` to mount \`production5\` from \`serverb.lab.example.com:/user-homes/production5\`.
+- The mount should use NFS with options \`rw,sync\`.`,
+    descriptionKo: 'servera에서 AutoFS를 구성하여 production5 사용자의 홈 디렉토리를 자동으로 마운트하도록 설정하시오.',
+    scenarios: [
+      'Master Map: /etc/auto.master',
+      'Indirect Map: /etc/auto.misc',
+      'Mount Point: /home/guest/production5',
+      'Remote: serverb.lab.example.com:/user-homes/production5',
+      'Options: fstype=nfs,rw,sync'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Install the autofs package',
+        instructionKo: 'autofs 패키지를 설치하시오.',
+        command: 'dnf install autofs -y'
+      },
+      {
+        id: 2,
+        instruction: 'Enable and start autofs.service',
+        instructionKo: 'autofs 서비스를 활성화하고 시작하시오.',
+        command: 'systemctl enable --now autofs.service'
+      },
+      {
+        id: 3,
+        instruction: 'Open the master map file with vi',
+        instructionKo: '/etc/auto.master 파일을 vi 에디터로 여시오.',
+        command: 'vi /etc/auto.master'
+      },
+      {
+        id: 4,
+        instruction: 'Configure /etc/auto.master to manage /home/guest',
+        instructionKo: '/home/guest 디렉토리 관리를 위해 /etc/auto.master 파일을 수정하시오.',
+        isMultiLine: true,
+        command: '/home/guest /etc/auto.misc'
+      },
+      {
+        id: 5,
+        instruction: 'Open the indirect map file with vi',
+        instructionKo: '/etc/auto.misc 파일을 vi 에디터로 여시오.',
+        command: 'vi /etc/auto.misc'
+      },
+      {
+        id: 6,
+        instruction: 'Configure /etc/auto.misc for the production5 mount',
+        instructionKo: 'production5 마운트 설정을 위해 /etc/auto.misc 파일을 수정하시오.',
+        isMultiLine: true,
+        command: 'production5 -fstype=nfs,rw,sync serverb.lab.example.com:/user-homes/production5'
+      },
+      {
+        id: 7,
+        instruction: 'Restart autofs.service to apply changes',
+        instructionKo: '변경 사항을 적용하기 위해 autofs 서비스를 재시작하시오.',
+        command: 'systemctl restart autofs.service'
+      },
+      {
+        id: 8,
+        instruction: 'Verify access to the mounted directory',
+        instructionKo: '마운트된 디렉토리에 접근하여 설정을 확인하시오.',
+        command: 'ls -ltr /home/guest/production5'
+      }
+    ]
   }
 ];
