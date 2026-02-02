@@ -344,5 +344,136 @@ gpgcheck = false`
         command: 'crontab -lu punit1'
       }
     ]
+  },
+  {
+    id: 'find-command-basics',
+    category: 'Server A',
+    title: 'Find Command Basics',
+    titleKo: 'find 명령어 기초',
+    description: `## Question 1. Locate all the files with name \`devops.txt\` in the \`/home/student\` directory.
+
+## Question 2. Locate all the files with name \`devops.txt\` in the \`/home/student\` directory and save in the \`/data/question2.txt\`
+
+## Question 3. Locate all the files with name \`devops.txt\` in the \`/home/student\` directory but owned by user \`punit\` and copy it under \`/data/question3-files\`.
+
+## Question 4. Locate all the files which are owned by user \`punit\` and copy it under \`/data/question4-files/flower\`.`,
+    descriptionKo: '/home/student 디렉토리 내에서 파일을 검색하고 결과를 처리하는 다양한 find 명령어를 연습하시오.',
+    scenarios: [
+      'Target Directory: /home/student',
+      'Filename: devops.txt',
+      'Owner: punit',
+      'Output/Copy Paths: /data/question2.txt, /data/question3-files, /data/question4-files/flower'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Locate all files with name "devops.txt" in /home/student',
+        instructionKo: '/home/student 디렉토리에서 이름이 "devops.txt"인 모든 파일을 찾으시오.',
+        command: 'find /home/student -name devops.txt'
+      },
+      {
+        id: 2,
+        instruction: 'Locate "devops.txt" in /home/student and save the list to /data/question2.txt',
+        instructionKo: '/home/student에서 "devops.txt" 파일을 찾아 그 목록을 /data/question2.txt에 저장하시오.',
+        command: 'find /home/student -name devops.txt > /data/question2.txt'
+      },
+      {
+        id: 3,
+        instruction: 'Locate "devops.txt" in /home/student owned by "punit" and copy to /data/question3-files',
+        instructionKo: '/home/student에서 "punit" 소유의 "devops.txt"를 찾아 /data/question3-files로 복사하시오.',
+        command: 'find /home/student -name devops.txt -user punit -exec cp -pv {} /data/question3-files/ \\;'
+      },
+      {
+        id: 4,
+        instruction: 'Create directory /data/question4-files/flower',
+        instructionKo: '/data/question4-files/flower 디렉토리를 생성하시오.',
+        command: 'mkdir -p /data/question4-files/flower'
+      },
+      {
+        id: 5,
+        instruction: 'Locate all files owned by "punit" and copy to /data/question4-files/flower',
+        instructionKo: '"punit" 소유의 모든 파일을 찾아 /data/question4-files/flower 디렉토리로 복사하시오.',
+        command: 'find / -user punit -exec cp -rvf {} /data/question4-files/flower/ \\;'
+      },
+      {
+        id: 6,
+        instruction: 'Verify the copied files',
+        instructionKo: '복사된 파일들을 확인하시오.',
+        command: 'ls -latr /data/question4-files/flower/'
+      }
+    ]
+  },
+  {
+    id: 'find-command-scripting',
+    category: 'Server A',
+    title: 'Find Command Scripting',
+    titleKo: 'find 명령어 스크립트 작성',
+    description: `## Question 5. Create a script named \`question5-find.sh\` under \`/usr/local/bin\` directory and this script must locate all the regular files which are less than \`1M\` under \`/usr/share\` directory and save the searched file paths under \`/root/question5-find-output.txt\` file.
+
+## Question 6. Create a script named \`question6-find.sh\` under \`/usr/local/bin\` directory and this script must locate all the regular files which are less than \`900k\` and more than \`30K\` under \`/var\` directory and these files must set SUID permission. You need to save the searched file paths under \`/root/question6-find-output\`.`,
+    descriptionKo: '특정 조건의 파일을 찾아 결과를 파일로 저장하는 쉘 스크립트를 작성하고 권한을 설정하는 연습을 하시오.',
+    scenarios: [
+      'Scripts: /usr/local/bin/question5-find.sh, /usr/local/bin/question6-find.sh',
+      'Filters: Size (-1M, +30k, -900k), Type (f), Permissions (SUID)',
+      'Output: /root/question5-find-output.txt, /root/question6-find-output'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create the script for Question 5 (/usr/local/bin/question5-find.sh)',
+        instructionKo: '/usr/local/bin/question5-find.sh 스크립트를 작성하시오.',
+        isMultiLine: true,
+        command: 'find /usr/share/ -type f -size -1M > /root/question5-find-output.txt'
+      },
+      {
+        id: 2,
+        instruction: 'Give execute permission to question5-find.sh',
+        instructionKo: 'question5-find.sh 파일에 실행 권한을 부여하시오.',
+        command: 'chmod +x /usr/local/bin/question5-find.sh'
+      },
+      {
+        id: 3,
+        instruction: 'Execute the script question5-find.sh',
+        instructionKo: '스크립트를 실행하시오.',
+        command: 'question5-find.sh'
+      },
+      {
+        id: 4,
+        instruction: 'Verify Question 5 output',
+        instructionKo: '생성된 결과 파일을 확인하시오.',
+        command: 'cat /root/question5-find-output.txt'
+      },
+      {
+        id: 5,
+        instruction: 'Create directory for Question 6 output',
+        instructionKo: 'Question 6 결과 저장을 위한 디스크토리를 생성하시오.',
+        command: 'mkdir -p /root/question6-find-output'
+      },
+      {
+        id: 6,
+        instruction: 'Create the script for Question 6 (/usr/local/bin/question6-find.sh)',
+        instructionKo: '/usr/local/bin/question6-find.sh 스크립트를 작성하시오.',
+        isMultiLine: true,
+        command: 'find /var -type f -size +30k -size -900k -perm -u+s > /root/question6-find-output'
+      },
+      {
+        id: 7,
+        instruction: 'Give execute permission to question6-find.sh',
+        instructionKo: 'question6-find.sh 파일에 실행 권한을 부여하시오.',
+        command: 'chmod +x /usr/local/bin/question6-find.sh'
+      },
+      {
+        id: 8,
+        instruction: 'Execute the script question6-find.sh',
+        instructionKo: '스크립트를 실행하시오.',
+        command: 'question6-find.sh'
+      },
+      {
+        id: 9,
+        instruction: 'Verify Question 6 output',
+        instructionKo: '스크립트 실행 결과를 확인하시오.',
+        command: 'cat /root/question6-find-output'
+      }
+    ]
   }
 ];
