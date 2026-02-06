@@ -1125,6 +1125,62 @@ stratumweight 0`
     ]
   },
   {
+    id: 'collaborative-directory-managers',
+    category: 'User & Group',
+    title: 'Collaborative Directory Creation',
+    titleKo: '협력 디렉토리 생성',
+    description: `## Create a collaborative directory \`/home/managers\` with the following characteristics:
+
+- The group owner of \`/home/managers\` should be \`sysmgrs\`.
+- The directory should be readable, writable, and accessible only by members of the \`sysmgrs\` group. Other users should not have these permissions. (Of course, root can access all files and directories on the system.)
+- Files created in \`/home/managers\` should automatically have their group ownership set to the \`sysmgrs\` group.
+
+### Setting Special Permissions
+- Symbolic: setuid = u+s; setgid = g+s; sticky = o+t
+- Octal: In the added fourth preceding digit; setuid = 4; setgid = 2; sticky = 1`,
+    descriptionKo: `## 다음 특징을 가진 협업 디렉토리 \`/home/managers\`를 생성하세요:
+
+- \`/home/managers\`의 그룹 소유자는 \`sysmgrs\`여야 합니다.
+- 디렉토리는 \`sysmgrs\` 그룹의 구성원만 읽기, 쓰기 및 접근할 수 있으며, 다른 사용자는 이러한 권한을 가지지 않습니다. (물론, root 사용자는 시스템의 모든 파일과 디렉토리에 접근할 수 있습니다.)
+- \`/home/managers\`에 생성된 파일은 자동으로 그룹 소유권이 \`sysmgrs\` 그룹으로 설정되어야 합니다.
+
+### 특수 권한 설정
+- Symbolic: setuid = u+s; setgid = g+s; sticky = o+t
+- Octal: 4번째 자리 숫자; setuid = 4; setgid = 2; sticky = 1`,
+    scenarios: [
+      'Directory: /home/managers',
+      'Group Owner: sysmgrs',
+      'Permissions: group:rwx, other:---',
+      'SGID: Files inherit sysmgrs group ownership'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create the managers directory',
+        instructionKo: 'managers 디렉토리를 생성하시오.',
+        command: 'mkdir /home/managers'
+      },
+      {
+        id: 2,
+        instruction: 'Change the group ownership to sysmgrs',
+        instructionKo: '디렉토리의 그룹 소유권을 sysmgrs로 변경하시오.',
+        command: 'chown :sysmgrs /home/managers/'
+      },
+      {
+        id: 3,
+        instruction: 'Set permissions with SGID (2770)',
+        instructionKo: 'SGID를 포함한 권한(2770)을 설정하시오.',
+        command: 'chmod 2770 /home/managers/'
+      },
+      {
+        id: 4,
+        instruction: 'Verify directory permissions and SGID',
+        instructionKo: '디렉토리의 권한과 SGID 설정을 확인하시오.',
+        command: 'ls -ld /home/managers/'
+      }
+    ]
+  },
+  {
     id: 'tar-archiving-basics',
     category: 'File Management',
     title: 'Tar Archiving & Compression',
