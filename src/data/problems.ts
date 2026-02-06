@@ -801,6 +801,85 @@ gpgcheck = 0`
     ]
   },
   {
+    id: 'autofs-remote-home',
+    category: 'Server A',
+    title: 'Configure AutoFS for Remote Home',
+    titleKo: 'AutoFS 원격 홈 디렉토리 설정',
+    description: `## Configure autofs to automatically mount remote user home directories as follows:
+
+- \`materials.example.com\` (172.25.254.254) has an NFS shared directory \`/rhome\`. This filesystem contains a pre-configured home directory for user \`remoteuser1\`.
+- The home directory for \`remoteuser1\` is \`materials.example.com:/rhome/remoteuser1\`.
+- The home directory for \`remoteuser1\` should be automatically mounted under \`/rhome/remoteuser1\` on the local system.
+- The home directory must be writable by the user.
+- The password for \`remoteuser1\` is \`flectrag\`.`,
+    descriptionKo: `## autofs를 설정하여 원격 사용자의 홈 디렉토리를 아래 요구대로 자동으로 마운트되도록 하세요.
+
+- \`materials.example.com\` (172.25.254.254)에는 NFS 공유 디렉토리 \`/rhome\`이 있습니다. 이 파일 시스템에는 사용자 \`remoteuser1\`에 대해 사전 구성된 홈 디렉토리가 포함됩니다.
+- \`remoteuser1\`의 홈 디렉토리는 \`materials.example.com:/rhome/remoteuser1\`입니다.
+- \`remoteuser1\`의 홈 디렉토리는 로컬의 \`/rhome\` 디렉토리 하위의 \`/rhome/remoteuser1\`로 자동으로 마운트되어야 합니다.
+- 홈 디렉토리는 사용자가 쓰기 가능해야 합니다.
+- \`remoteuser1\`의 비밀번호는 \`flectrag\`입니다.`,
+    scenarios: [
+      'NFS Server: materials.example.com (172.25.254.254)',
+      'Remote Path: /rhome/remoteuser1',
+      'Local Mount: /rhome/remoteuser1',
+      'User: remoteuser1',
+      'Password: flectrag'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Install the autofs package',
+        instructionKo: 'autofs 패키지를 설치하시오.',
+        command: 'dnf -y install autofs'
+      },
+      {
+        id: 2,
+        instruction: 'Enable and start the autofs service',
+        instructionKo: 'autofs 서비스를 활성화하고 시작하시오.',
+        command: 'systemctl enable --now autofs'
+      },
+      {
+        id: 3,
+        instruction: 'Open the master map file with vim',
+        instructionKo: '/etc/auto.master 파일을 vim 에디터로 여시오.',
+        command: 'vim /etc/auto.master'
+      },
+      {
+        id: 4,
+        instruction: 'Configure /etc/auto.master to manage /rhome',
+        instructionKo: '/rhome 디렉토리 관리를 위해 /etc/auto.master 파일을 수정하시오.',
+        isMultiLine: true,
+        command: '/rhome /etc/auto.rhome'
+      },
+      {
+        id: 5,
+        instruction: 'Create and open the indirect map file',
+        instructionKo: '/etc/auto.rhome 파일을 생성하고 여시오.',
+        command: 'vim /etc/auto.rhome'
+      },
+      {
+        id: 6,
+        instruction: 'Configure /etc/auto.rhome for the remoteuser1 mount',
+        instructionKo: 'remoteuser1 마운트 설정을 위해 /etc/auto.rhome 파일을 수정하시오.',
+        isMultiLine: true,
+        command: 'remoteuser1 -rw materials.example.com:/rhome/remoteuser1'
+      },
+      {
+        id: 7,
+        instruction: 'Restart autofs service to apply changes',
+        instructionKo: '변경 사항을 적용하기 위해 autofs 서비스를 재시작하시오.',
+        command: 'systemctl restart autofs'
+      },
+      {
+        id: 8,
+        instruction: 'Verify the mount by accessing the directory',
+        instructionKo: '디렉토리에 접근하여 마운트를 확인하시오.',
+        command: 'ls -ltr /rhome/remoteuser1'
+      }
+    ]
+  },
+  {
     id: 'ntp-configuration',
     category: 'Server A',
     title: 'Configure NTP Sync',
@@ -877,6 +956,58 @@ stratumweight 0`
         instruction: 'Enable the chronyd-restricted service',
         instructionKo: 'chronyd-restricted 서비스를 활성화(enable) 하시오.',
         command: 'systemctl enable chronyd-restricted.service'
+      }
+    ]
+  },
+  {
+    id: 'ntp-client-configuration',
+    category: 'Server A',
+    title: 'Configure NTP Client',
+    titleKo: 'NTP 클라이언트 설정',
+    description: `## Configure the system as an NTP client of \`materials.example.com\`.`,
+    descriptionKo: `## 시스템을 \`materials.example.com\`의 NTP 클라이언트로 구성하세요.`,
+    scenarios: [
+      'NTP Server: materials.example.com',
+      'Service: chronyd',
+      'Config File: /etc/chrony.conf'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Check the chronyd service status',
+        instructionKo: 'chronyd 서비스 상태를 확인하시오.',
+        command: 'systemctl status chronyd'
+      },
+      {
+        id: 2,
+        instruction: 'Enable and start the chronyd service',
+        instructionKo: 'chronyd 서비스를 활성화하고 시작하시오.',
+        command: 'systemctl enable --now chronyd'
+      },
+      {
+        id: 3,
+        instruction: 'Open /etc/chrony.conf with vim',
+        instructionKo: '/etc/chrony.conf 파일을 vim 에디터로 여시오.',
+        command: 'vim /etc/chrony.conf'
+      },
+      {
+        id: 4,
+        instruction: 'Add the NTP server configuration',
+        instructionKo: 'NTP 서버 설정을 추가하시오.',
+        isMultiLine: true,
+        command: 'server materials.example.com iburst'
+      },
+      {
+        id: 5,
+        instruction: 'Restart the chronyd service',
+        instructionKo: 'chronyd 서비스를 재시작하시오.',
+        command: 'systemctl restart chronyd'
+      },
+      {
+        id: 6,
+        instruction: 'Verify the NTP sources',
+        instructionKo: 'NTP 소스를 확인하시오.',
+        command: 'chronyc sources'
       }
     ]
   },
