@@ -1251,6 +1251,135 @@ stratumweight 0`
     ]
   },
   {
+    id: 'podman-build-containerfile',
+    category: 'Server A',
+    title: 'Podman: Build from Containerfile',
+    titleKo: 'Podman: Containerfile로 이미지 빌드',
+    description: `## As user \`wallah\`, download \`http://classroom/Containerfile\`.
+Without modifying the contents of this file, build an image named \`pdf\`.`,
+    descriptionKo: `## \`wallah\` 사용자로 \`http://classroom/Containerfile\`을(를) 다운로드하세요.
+이 파일의 내용을 수정하지 말고, 이미지 이름을 \`pdf\`로 하여 빌드하세요.`,
+    scenarios: [
+      'User: wallah',
+      'Containerfile URL: http://classroom/Containerfile',
+      'Image Name: pdf',
+      'Registry: registry.lab.example.com'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Install container-tools package',
+        instructionKo: 'container-tools 패키지를 설치하시오.',
+        command: 'dnf -y install container-tools'
+      },
+      {
+        id: 2,
+        instruction: 'Switch to wallah user on node1',
+        instructionKo: 'node1에서 wallah 사용자로 전환하시오.',
+        command: 'ssh wallah@node1'
+      },
+      {
+        id: 3,
+        instruction: 'Download the Containerfile',
+        instructionKo: 'Containerfile을 다운로드하시오.',
+        command: 'wget http://classroom/Containerfile'
+      },
+      {
+        id: 4,
+        instruction: 'Login to the container registry',
+        instructionKo: '컨테이너 레지스트리에 로그인하시오.',
+        command: 'podman login -u admin -p redhat321 registry.lab.example.com'
+      },
+      {
+        id: 5,
+        instruction: 'Build the image named pdf',
+        instructionKo: 'pdf라는 이름으로 이미지를 빌드하시오.',
+        command: 'podman build -t pdf .'
+      }
+    ]
+  },
+  {
+    id: 'podman-systemd-wallah',
+    category: 'Server A',
+    title: 'Podman: Container Systemd Service',
+    titleKo: 'Podman: 컨테이너 Systemd 서비스 구성',
+    description: `## Configure a systemd service for a container as user \`wallah\`.
+
+- Container name: \`ascii2pdf\`
+- Use the \`pdf\` image created earlier.
+- The service should start automatically on system reboot without manual intervention.
+- Configure the service to automatically mount \`/opt/file\` to \`/dir1\` and \`/opt/progress\` to \`/dir2\` when the container starts.`,
+    descriptionKo: `## 사용자 \`wallah\`로 컨테이너에 대한 systemd 서비스를 구성합니다.
+
+- 컨테이너 이름: \`ascii2pdf\`
+- 앞서 생성한 \`pdf\` 이미지를 사용하세요.
+- 수동 개입 없이 시스템 재부팅시 자동으로 서비스를 시작합니다.
+- 컨테이너 시작 시 \`/opt/file\`을 \`/dir1\`에, \`/opt/progress\`를 \`/dir2\`에 자동으로 마운트하도록 서비스를 구성합니다.`,
+    scenarios: [
+      'User: wallah',
+      'Container Name: ascii2pdf',
+      'Image: pdf',
+      'Mounts: /opt/file -> /dir1, /opt/progress -> /dir2',
+      'Auto-start on reboot: enabled'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create directories and set ownership',
+        instructionKo: '디렉토리를 생성하고 소유권을 설정하시오.',
+        command: 'sudo mkdir /opt/{file,progress} && sudo chown wallah:wallah /opt/{file,progress}'
+      },
+      {
+        id: 2,
+        instruction: 'Run the container with volume mounts',
+        instructionKo: '볼륨 마운트와 함께 컨테이너를 실행하시오.',
+        command: 'podman run -d --name ascii2pdf -v /opt/file:/dir1:Z -v /opt/progress:/dir2:Z pdf'
+      },
+      {
+        id: 3,
+        instruction: 'Generate the systemd unit file',
+        instructionKo: 'systemd unit 파일을 생성하시오.',
+        command: 'podman generate systemd -n ascii2pdf -f --new'
+      },
+      {
+        id: 4,
+        instruction: 'Create the systemd user directory and move the service file',
+        instructionKo: 'systemd 사용자 디렉토리를 생성하고 서비스 파일을 이동하시오.',
+        command: 'mkdir -p ~/.config/systemd/user && mv ~/container-ascii2pdf.service ~/.config/systemd/user/'
+      },
+      {
+        id: 5,
+        instruction: 'Reload the user systemd daemon',
+        instructionKo: '사용자 systemd 데몬을 리로드하시오.',
+        command: 'systemctl --user daemon-reload'
+      },
+      {
+        id: 6,
+        instruction: 'Enable and start the container service',
+        instructionKo: '컨테이너 서비스를 활성화하고 시작하시오.',
+        command: 'systemctl enable --now --user container-ascii2pdf'
+      },
+      {
+        id: 7,
+        instruction: 'Enable user lingering for wallah',
+        instructionKo: 'wallah 사용자에 대해 lingering을 활성화하시오.',
+        command: 'loginctl enable-linger'
+      },
+      {
+        id: 8,
+        instruction: 'Verify linger status for wallah',
+        instructionKo: 'wallah 사용자의 linger 상태를 확인하시오.',
+        command: 'loginctl show-user wallah'
+      },
+      {
+        id: 9,
+        instruction: 'Verify the container is running after reboot',
+        instructionKo: '재부팅 후 컨테이너가 실행 중인지 확인하시오.',
+        command: 'podman ps'
+      }
+    ]
+  },
+  {
     id: 'shared-directory-permissions',
     category: 'User & Group',
     title: 'Collaborative Shared Directory',
