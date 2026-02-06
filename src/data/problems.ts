@@ -130,31 +130,31 @@ export const problems: Problem[] = [
         id: 8,
         instruction: 'Set password for punit',
         instructionKo: 'punit 사용자의 비밀번호를 설정하시오.',
-        command: 'echo "devops-wala" | passwd --stdin punit'
+        command: 'echo devops-wala | passwd --stdin punit'
       },
       {
         id: 9,
         instruction: 'Set password for rajan',
         instructionKo: 'rajan 사용자의 비밀번호를 설정하시오.',
-        command: 'echo "devops-wala" | passwd --stdin rajan'
+        command: 'echo devops-wala | passwd --stdin rajan'
       },
       {
         id: 10,
         instruction: 'Set password for harry',
         instructionKo: 'harry 사용자의 비밀번호를 설정하시오.',
-        command: 'echo "devops-wala" | passwd --stdin harry'
+        command: 'echo devops-wala | passwd --stdin harry'
       },
       {
         id: 11,
         instruction: 'Set password for peter',
         instructionKo: 'peter 사용자의 비밀번호를 설정하시오.',
-        command: 'echo "devops-wala" | passwd --stdin peter'
+        command: 'echo devops-wala | passwd --stdin peter'
       },
       {
         id: 12,
         instruction: 'Set password for mon_ocp',
         instructionKo: 'mon_ocp 사용자의 비밀번호를 설정하시오.',
-        command: 'echo "devops-wala" | passwd --stdin mon_ocp'
+        command: 'echo devops-wala | passwd --stdin mon_ocp'
       }
     ]
   },
@@ -174,7 +174,7 @@ export const problems: Problem[] = [
         id: 1,
         instruction: 'Open the file to modify password policy',
         instructionKo: '패스워드 정책을 수정할 파일을 여시오.',
-        command: 'vi /etc/login.defs'
+        command: 'vim /etc/login.defs'
       },
       {
         id: 2,
@@ -330,7 +330,7 @@ gpgcheck = 0`
         id: 4,
         instruction: 'Install the httpd package',
         instructionKo: 'httpd 패키지를 설치하시오.',
-        command: 'dnf install httpd -y'
+        command: 'dnf -y install httpd'
       }
     ]
   },
@@ -429,13 +429,13 @@ gpgcheck = 0`
         id: 1,
         instruction: 'Start the httpd service',
         instructionKo: 'httpd 서비스를 시작하시오.',
-        command: 'systemctl start httpd.service'
+        command: 'systemctl start httpd'
       },
       {
         id: 2,
         instruction: 'Enable the httpd service to start on boot',
         instructionKo: '시스템 부팅 시 httpd 서비스가 자동 시작되도록 설정하시오.',
-        command: 'systemctl enable httpd.service'
+        command: 'systemctl enable httpd'
       },
       {
         id: 3,
@@ -503,13 +503,13 @@ gpgcheck = 0`
         id: 2,
         instruction: 'Set password for punit1',
         instructionKo: 'punit1 사용자의 비밀번호를 설정하시오.',
-        command: 'echo "devops-wala" | passwd --stdin punit1'
+        command: 'echo devops-wala | passwd --stdin punit1'
       },
       {
         id: 3,
         instruction: 'Open the crontab editor for user punit1',
         instructionKo: 'punit1 사용자의 크론탭 에디터를 여시오.',
-        command: 'crontab -eu punit1'
+        command: 'crontab -u punit1 -e'
       },
       {
         id: 4,
@@ -522,7 +522,7 @@ gpgcheck = 0`
         id: 5,
         instruction: 'Verify crontab for user punit1',
         instructionKo: 'punit1 사용자의 크론탭 항목이 올바르게 설정되었는지 확인하시오.',
-        command: 'crontab -lu punit1'
+        command: 'crontab -u punit1 -l'
       }
     ]
   },
@@ -699,7 +699,7 @@ gpgcheck = 0`
       {
         id: 5,
         instruction: 'Create directory for Question 6 output',
-        instructionKo: 'Question 6 결과 저장을 위한 디스크토리를 생성하시오.',
+        instructionKo: 'Question 6 결과 저장을 위한 디렉토리를 생성하시오.',
         command: 'mkdir -p /root/question6-find-output'
       },
       {
@@ -805,19 +805,19 @@ gpgcheck = 0`
         id: 1,
         instruction: 'Install the autofs package',
         instructionKo: 'autofs 패키지를 설치하시오.',
-        command: 'dnf install autofs -y'
+        command: 'dnf -y install autofs'
       },
       {
         id: 2,
-        instruction: 'Enable and start autofs.service',
+        instruction: 'Enable and start autofs',
         instructionKo: 'autofs 서비스를 활성화하고 시작하시오.',
-        command: 'systemctl enable --now autofs.service'
+        command: 'systemctl enable --now autofs'
       },
       {
         id: 3,
-        instruction: 'Open the master map file with vi',
-        instructionKo: '/etc/auto.master 파일을 vi 에디터로 여시오.',
-        command: 'vi /etc/auto.master'
+        instruction: 'Open the master map file with vim',
+        instructionKo: '/etc/auto.master 파일을 vim 에디터로 여시오.',
+        command: 'vim /etc/auto.master'
       },
       {
         id: 4,
@@ -828,9 +828,9 @@ gpgcheck = 0`
       },
       {
         id: 5,
-        instruction: 'Open the indirect map file with vi',
-        instructionKo: '/etc/auto.misc 파일을 vi 에디터로 여시오.',
-        command: 'vi /etc/auto.misc'
+        instruction: 'Open the indirect map file with vim',
+        instructionKo: '/etc/auto.misc 파일을 vim 에디터로 여시오.',
+        command: 'vim /etc/auto.misc'
       },
       {
         id: 6,
@@ -841,9 +841,9 @@ gpgcheck = 0`
       },
       {
         id: 7,
-        instruction: 'Restart autofs.service to apply changes',
+        instruction: 'Restart autofs to apply changes',
         instructionKo: '변경 사항을 적용하기 위해 autofs 서비스를 재시작하시오.',
-        command: 'systemctl restart autofs.service'
+        command: 'systemctl restart autofs'
       },
       {
         id: 8,
@@ -946,7 +946,7 @@ gpgcheck = 0`
     descriptionKo: 'servera를 classroom.example.com NTP 서버와 동기화하도록 설정하시오.',
     scenarios: [
       'NTP Server: classroom.example.com',
-      'Service: chronyd.service',
+      'Service: chronyd',
       'Config File: /etc/chrony.conf',
       'Reference: iburst option'
     ],
@@ -955,7 +955,7 @@ gpgcheck = 0`
         id: 1,
         instruction: 'Check the status of NTP service (chronyd)',
         instructionKo: 'chronyd 서비스의 상태를 확인하시오.',
-        command: 'systemctl status chronyd.service'
+        command: 'systemctl status chronyd'
       },
       {
         id: 2,
@@ -965,9 +965,9 @@ gpgcheck = 0`
       },
       {
         id: 3,
-        instruction: 'Open /etc/chrony.conf with vi',
-        instructionKo: '/etc/chrony.conf 파일을 vi 에디터로 여시오.',
-        command: 'vi /etc/chrony.conf'
+        instruction: 'Open /etc/chrony.conf with vim',
+        instructionKo: '/etc/chrony.conf 파일을 vim 에디터로 여시오.',
+        command: 'vim /etc/chrony.conf'
       },
       {
         id: 4,
@@ -996,19 +996,19 @@ stratumweight 0`
         id: 5,
         instruction: 'Restart the NTP service',
         instructionKo: 'chronyd 서비스를 재시작하시오.',
-        command: 'systemctl restart chronyd.service'
+        command: 'systemctl restart chronyd'
       },
       {
         id: 6,
         instruction: 'Verify the NTP status and source',
         instructionKo: 'NTP 동기화 상태와 소스를 확인하시오.',
-        command: 'systemctl status chronyd.service'
+        command: 'systemctl status chronyd'
       },
       {
         id: 7,
         instruction: 'Enable the chronyd-restricted service',
         instructionKo: 'chronyd-restricted 서비스를 활성화(enable) 하시오.',
-        command: 'systemctl enable chronyd-restricted.service'
+        command: 'systemctl enable chronyd-restricted'
       }
     ]
   },
@@ -1567,25 +1567,25 @@ The \`tar\` (tape archive) command is essential for creating, listing, and extra
         id: 1,
         instruction: 'Create a gzip compressed archive of /var/log/ in /root/test1.tar.gz',
         instructionKo: '/var/log/ 디렉토리를 gzip 방식으로 압축하여 /root/test1.tar.gz 아카이브를 생성하시오.',
-        command: 'tar cvfz /root/test1.tar.gz /var/log/*'
+        command: 'tar -cvzf /root/test1.tar.gz /var/log/*'
       },
       {
         id: 2,
         instruction: 'Create a bzip2 compressed archive of /var/log/ in /root/test2.tar.bz2',
         instructionKo: '/var/log/ 디렉토리를 bzip2 방식으로 압축하여 /root/test2.tar.bz2 아카이브를 생성하시오.',
-        command: 'tar cvfj /root/test2.tar.bz2 /var/log/*'
+        command: 'tar -cvjf /root/test2.tar.bz2 /var/log/*'
       },
       {
         id: 3,
         instruction: 'Extract the gzip archive /root/test1.tar.gz',
         instructionKo: '/root/test1.tar.gz 아카이브의 압축을 해제하시오.',
-        command: 'tar zxvf /root/test1.tar.gz'
+        command: 'tar -xvzf /root/test1.tar.gz'
       },
       {
         id: 4,
         instruction: 'Extract the bzip2 archive /root/test2.tar.bz2',
         instructionKo: '/root/test2.tar.bz2 아카이브의 압축을 해제하시오.',
-        command: 'tar jxvf /root/test2.tar.bz2'
+        command: 'tar -xvjf /root/test2.tar.bz2'
       }
     ]
   },
@@ -1835,7 +1835,7 @@ The swap partition must be automatically mounted when the system boots. Do not d
         id: 1,
         instruction: 'Install the tuned package',
         instructionKo: 'tuned 패키지를 설치하시오.',
-        command: 'dnf install -y tuned'
+        command: 'dnf -y install tuned'
       },
       {
         id: 2,
