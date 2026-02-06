@@ -500,6 +500,52 @@ gpgcheck = 0`
     ]
   },
   {
+    id: 'cron-job-harry',
+    category: 'Server A',
+    title: 'Configure Cron Job for Harry',
+    titleKo: '크론탭(Cron Job) 설정 - harry',
+    description: `## Configure a cron job for user harry to run \`/usr/bin/echo hello\` every day at 14:23.`,
+    descriptionKo: `## harry 사용자로 매일 14:23에 \`/usr/bin/echo hello\`를 실행하는 cron 작업을 설정하라.`,
+    scenarios: [
+      'User: harry',
+      'Schedule: 14:23 daily',
+      'Command: /usr/bin/echo hello'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Check the crond service status',
+        instructionKo: 'crond 서비스 상태를 확인하시오.',
+        command: 'systemctl status crond'
+      },
+      {
+        id: 2,
+        instruction: 'Enable and start the crond service',
+        instructionKo: 'crond 서비스를 활성화하고 시작하시오.',
+        command: 'systemctl enable --now crond'
+      },
+      {
+        id: 3,
+        instruction: 'Open the crontab editor for user harry',
+        instructionKo: 'harry 사용자의 크론탭 에디터를 여시오.',
+        command: 'crontab -u harry -e'
+      },
+      {
+        id: 4,
+        instruction: 'Configure crontab entry for daily execution at 14:23',
+        instructionKo: '매일 14:23에 실행되는 크론탭 항목을 작성하시오.',
+        isMultiLine: true,
+        command: '23 14 * * * /usr/bin/echo hello'
+      },
+      {
+        id: 5,
+        instruction: 'Verify the crontab for user harry',
+        instructionKo: 'harry 사용자의 크론탭 항목을 확인하시오.',
+        command: 'crontab -u harry -l'
+      }
+    ]
+  },
+  {
     id: 'find-command-basics',
     category: 'Server A',
     title: 'Find Command Basics',
