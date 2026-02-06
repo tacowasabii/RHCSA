@@ -9,11 +9,11 @@ export const problems: Problem[] = [
     description: 'Configure the network details on servera as follows:',
     descriptionKo: 'servera의 네트워크 설정을 다음과 같이 구성하시오:',
     scenarios: [
-      'Hostname : servera.lab.example.com',
-      'IP Address : 192.168.1.10',
-      'Netmask : 255.255.255.0',
-      'Gateway : 192.168.1.1',
-      'Nameserver: 192.168.1.1'
+      'Hostname: servera.lab.example.com',
+      'IP Address: 192.168.1.10',
+      'Netmask: 255.255.255.0',
+      'Gateway: 192.168.1.1',
+      'DNS: 192.168.1.1'
     ],
     steps: [
       {
@@ -30,21 +30,76 @@ export const problems: Problem[] = [
       },
       {
         id: 3,
-        instruction: 'Set the IP, Gateway, and Nameserver for "Wired connection 1"',
-        instructionKo: '"Wired connection 1"의 IP, 게이트웨이, 네임서버를 설정하시오.',
-        command: 'nmcli connection modify "Wired connection 1" ipv4.addresses 192.168.1.10/24 ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.1 ipv4.method manual'
+        instruction: 'Configure IPv4 settings with autoconnect',
+        instructionKo: 'autoconnect 및 IPv4 설정을 구성하시오.',
+        command: 'nmcli con modify "Wired connection 1" autoconnect yes ipv4.method manual ipv4.addresses 192.168.1.10/24 ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.1'
       },
       {
         id: 4,
         instruction: 'Bring up the connection to apply changes',
         instructionKo: '변경 사항을 적용하기 위해 연결을 활성화하시오.',
-        command: 'nmcli connection up "Wired connection 1"'
+        command: 'nmcli con up "Wired connection 1"'
       },
       {
         id: 5,
         instruction: 'Test connectivity to the gateway',
         instructionKo: '게이트웨이와의 연결을 테스트하시오.',
         command: 'ping 192.168.1.1'
+      }
+    ]
+  },
+  {
+    id: 'network-config-2',
+    category: 'Server A',
+    title: 'Configure Network Settings (node1)',
+    titleKo: '네트워크 설정 구성 (node1)',
+    description: `## Configure the network settings on \`node1\` as follows:
+
+- Set the hostname to \`node1.domain250.example.com\`.
+- Configure the IPv4 address, subnet mask, gateway, and DNS.
+- Ensure the connection is set to auto-connect.`,
+    descriptionKo: `## node1의 네트워크 구성을 아래와 같이 변경하세요.
+
+- 호스트네임을 \`node1.domain250.example.com\`으로 설정하세요.
+- IPv4 주소, 서브넷 마스크, 게이트웨이, DNS를 설정하세요.
+- 연결이 자동으로 활성화되도록 설정하세요.`,
+    scenarios: [
+      'Hostname: node1.domain250.example.com',
+      'IP Address: 172.25.250.100',
+      'Subnet Mask: 255.255.255.0',
+      'Gateway: 172.25.250.254',
+      'DNS: 172.25.250.254'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Set the hostname to node1.domain250.example.com',
+        instructionKo: '호스트네임을 node1.domain250.example.com으로 설정하시오.',
+        command: 'hostnamectl set-hostname node1.domain250.example.com'
+      },
+      {
+        id: 2,
+        instruction: 'List all network connections',
+        instructionKo: '모든 네트워크 연결 정보를 조회하시오.',
+        command: 'nmcli con show'
+      },
+      {
+        id: 3,
+        instruction: 'Configure IPv4 settings with autoconnect',
+        instructionKo: 'autoconnect 및 IPv4 설정을 구성하시오.',
+        command: 'nmcli con modify "Wired connection 1" autoconnect yes ipv4.method manual ipv4.addresses 172.25.250.100/24 ipv4.gateway 172.25.250.254 ipv4.dns 172.25.250.254'
+      },
+      {
+        id: 4,
+        instruction: 'Bring up the connection to apply changes',
+        instructionKo: '변경 사항을 적용하기 위해 연결을 활성화하시오.',
+        command: 'nmcli con up "Wired connection 1"'
+      },
+      {
+        id: 5,
+        instruction: 'Verify the network configuration',
+        instructionKo: '네트워크 설정 변경 여부를 확인하시오.',
+        command: 'ip a'
       }
     ]
   },
