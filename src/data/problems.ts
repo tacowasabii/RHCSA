@@ -1494,6 +1494,53 @@ Without modifying the contents of this file, build an image named \`pdf\`.`,
     ]
   },
   {
+    id: 'sudo-sysmgrs-nopasswd',
+    category: 'User & Group',
+    title: 'Configure Sudo for sysmgrs Group',
+    titleKo: 'sudo 설정',
+    description: `## Configure sudo access for the \`sysmgrs\` group
+
+Allow members of the \`sysmgrs\` group to use \`sudo\` without entering a password.
+
+### Key Concepts:
+- \`/etc/sudoers.d/\`: Drop-in directory for additional sudoers configurations
+- \`visudo\`: Safe editor for sudoers files with syntax checking
+- \`NOPASSWD\`: Allows sudo commands without password prompt`,
+    descriptionKo: `## \`sysmgrs\` 그룹에 대한 sudo 접근 설정
+
+\`sysmgrs\` 그룹 구성원이 sudo를 사용할 때 비밀번호를 입력하지 않도록 허용하세요.
+
+### 핵심 개념:
+- \`/etc/sudoers.d/\`: 추가 sudoers 설정을 위한 드롭인 디렉토리
+- \`visudo\`: 구문 검사를 포함한 sudoers 파일 안전 편집기
+- \`NOPASSWD\`: 비밀번호 입력 없이 sudo 명령 실행 허용`,
+    scenarios: [
+      'Group: sysmgrs',
+      'Sudo: NOPASSWD for all commands',
+      'Config file: /etc/sudoers.d/sysmgrs-group'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create a sudoers drop-in file for the sysmgrs group',
+        instructionKo: 'sysmgrs 그룹을 위한 sudoers 드롭인 파일을 생성하시오.',
+        command: "echo '%sysmgrs ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/sysmgrs-group"
+      },
+      {
+        id: 2,
+        instruction: 'Switch to natasha (a sysmgrs member) to verify',
+        instructionKo: 'natasha(sysmgrs 그룹 구성원)로 전환하여 확인하시오.',
+        command: 'su - natasha'
+      },
+      {
+        id: 3,
+        instruction: 'Verify sudo works without password',
+        instructionKo: '비밀번호 없이 sudo가 작동하는지 확인하시오.',
+        command: 'sudo cat /etc/shadow'
+      }
+    ]
+  },
+  {
     id: 'tar-archiving-basics',
     category: 'File Management',
     title: 'Tar Archiving & Compression',
