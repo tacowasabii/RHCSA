@@ -166,15 +166,14 @@ export const problems: Problem[] = [
     description: 'Configure password expiration policy to 17 days on servera.',
     descriptionKo: 'servera의 패스워드 만료 기간을 17일로 설정하시오.',
     scenarios: [
-      'File: /etc/login.defs',
       'Parameter: PASS_MAX_DAYS',
       'Value: 17'
     ],
     steps: [
       {
         id: 1,
-        instruction: 'Open /etc/login.defs to modify password policy',
-        instructionKo: '/etc/login.defs 파일을 열어 패스워드 정책을 수정하시오.',
+        instruction: 'Open the file to modify password policy',
+        instructionKo: '패스워드 정책을 수정할 파일을 여시오.',
         command: 'vi /etc/login.defs'
       },
       {
@@ -191,43 +190,127 @@ export const problems: Problem[] = [
     title: 'Install and Configure httpd',
     titleKo: 'httpd 패키지 설치 및 구성',
     description: `## You are the admin of \`devops-wala\` company and you need to install the \`httpd\` package on \`servera\`.
-## You can use the below URLs:  \`http://content.example.com/rhel10.0/x86_64/dvd/BaseOS\` & \`http://content.example.com/rhel10.0/x86_64/dvd/AppStream\``,
+## You can use the below URLs:  \`http://content/rhel9.0/x86_64/dvd/BaseOS\` & \`http://content/rhel9.0/x86_64/dvd/Appstream\``,
     descriptionKo: '제시된 URL들을 사용하여 Yum 저장소를 설정하고 httpd 패키지를 설치하시오.',
     scenarios: [
-      'BaseOS: http://content.example.com/rhel10.0/x86_64/dvd/BaseOS',
-      'AppStream: http://content.example.com/rhel10.0/x86_64/dvd/AppStream',
-      'Repo File: /etc/yum.repos.d/question12.repo',
+      'BaseOS: http://content/rhel9.0/x86_64/dvd/BaseOS',
+      'Appstream: http://content/rhel9.0/x86_64/dvd/Appstream',
+      'Repo File: /etc/yum.repos.d/rhel.repo',
       'Package: httpd'
     ],
     steps: [
       {
         id: 1,
-        instruction: 'Check for existing YUM repositories',
-        instructionKo: '기존 YUM 저장소 설정을 확인하시오.',
-        command: 'ls -ltr /etc/yum.repos.d/'
+        instruction: 'Open the repository configuration file with vim',
+        instructionKo: 'vim 에디터로 리포지토리 설정 파일을 여시오.',
+        command: 'vim /etc/yum.repos.d/rhel.repo'
       },
       {
         id: 2,
-        instruction: 'Create the repository configuration file (/etc/yum.repos.d/question12.repo) with the BaseOS and AppStream settings',
-        instructionKo: '리포지토리 설정 파일(/etc/yum.repos.d/question12.repo)을 요구사항에 맞춰 작성하시오.',
+        instruction: 'Configure the BaseOS and Appstream repositories',
+        instructionKo: 'BaseOS와 Appstream 리포지토리를 설정하시오.',
         isMultiLine: true,
-        command: `[BaseOs]
-name = BaseOs
-baseurl = http://content.example.com/rhel10.0/x86_64/dvd/BaseOS
-enabled = true
-gpgcheck = false
+        command: `[BaseOS]
+name = BaseOS
+baseurl = http://content/rhel9.0/x86_64/dvd/BaseOS
+enabled = 1
+gpgcheck = 0
 
-[APPs]
-name = Apps
-baseurl = http://content.example.com/rhel10.0/x86_64/dvd/AppStream
-enabled = true
-gpgcheck = false`
+[Appstream]
+name = Appstream
+baseurl = http://content/rhel9.0/x86_64/dvd/Appstream
+enabled = 1
+gpgcheck = 0`
       },
       {
         id: 3,
+        instruction: 'Verify the repository configuration',
+        instructionKo: '리포지토리 설정 변경 여부를 확인하시오.',
+        command: 'dnf repolist -v'
+      },
+      {
+        id: 4,
         instruction: 'Install the httpd package',
         instructionKo: 'httpd 패키지를 설치하시오.',
         command: 'dnf install httpd -y'
+      }
+    ]
+  },
+  {
+    id: 'selinux-debug-port82',
+    category: 'Server A',
+    title: 'Debug SELinux',
+    titleKo: 'SELinux 디버깅 (포트 82)',
+    description: `## A web server running on non-standard port 82 is having issues serving content. Troubleshoot to meet the following conditions:
+
+- The system's web server must be able to serve all existing HTML files in \`/var/www/html\`. (Note: Do not delete or modify the contents of existing files)
+- The web server should serve on port 82
+- The web server should start automatically when the system starts`,
+    descriptionKo: `## 비표준 포트 82에서 실행 중인 웹 서버가 서비스 제공 시 문제를 겪고 있다. 다음 조건을 충족하도록 트러블슈팅을 하라:
+
+- 시스템의 웹 서버가 \`/var/www/html\`에 있는 모든 기존 HTML 파일을 제공할 수 있어야 한다. (참고: 기존 파일의 내용을 삭제하거나 수정하지 말것)
+- 웹 서버가 포트 82로 서비스가 되도록 하라
+- 웹 서버가 시스템이 시작될 때 자동으로 시작되어야 한다`,
+    scenarios: [
+      'Port: 82/tcp',
+      'Document Root: /var/www/html',
+      'SELinux Context: httpd_sys_content_t',
+      'Service: httpd (auto-start enabled)'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Check the httpd service status',
+        instructionKo: 'httpd 서비스 상태를 확인하시오.',
+        command: 'systemctl status httpd'
+      },
+      {
+        id: 2,
+        instruction: 'Check the SELinux file context of /var/www/html/',
+        instructionKo: '/var/www/html/ 디렉토리의 SELinux 파일 컨텍스트를 확인하시오.',
+        command: 'ls -Z /var/www/html/'
+      },
+      {
+        id: 3,
+        instruction: 'Modify the SELinux file context for the HTML file',
+        instructionKo: 'HTML 파일의 SELinux 파일 컨텍스트를 수정하시오.',
+        command: 'semanage fcontext -m -t httpd_sys_content_t /var/www/html/file1'
+      },
+      {
+        id: 4,
+        instruction: 'Apply the SELinux context changes',
+        instructionKo: 'SELinux 컨텍스트 변경 사항을 적용하시오.',
+        command: 'restorecon -Rv /var/www/html'
+      },
+      {
+        id: 5,
+        instruction: 'Add port 82 to SELinux http_port_t',
+        instructionKo: 'SELinux http_port_t에 포트 82를 추가하시오.',
+        command: 'semanage port -a -t http_port_t -p tcp 82'
+      },
+      {
+        id: 6,
+        instruction: 'Add port 82/tcp to the firewall permanently',
+        instructionKo: '방화벽에 포트 82/tcp를 영구적으로 추가하시오.',
+        command: 'firewall-cmd --permanent --add-port=82/tcp'
+      },
+      {
+        id: 7,
+        instruction: 'Add http service to the firewall permanently',
+        instructionKo: '방화벽에 http 서비스를 영구적으로 추가하시오.',
+        command: 'firewall-cmd --permanent --add-service=http'
+      },
+      {
+        id: 8,
+        instruction: 'Reload the firewall to apply changes',
+        instructionKo: '변경 사항을 적용하기 위해 방화벽을 리로드하시오.',
+        command: 'firewall-cmd --reload'
+      },
+      {
+        id: 9,
+        instruction: 'Enable and start the httpd service',
+        instructionKo: 'httpd 서비스를 활성화하고 시작하시오.',
+        command: 'systemctl enable --now httpd'
       }
     ]
   },
