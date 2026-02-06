@@ -239,19 +239,19 @@ export const problems: Problem[] = [
         id: 5,
         instruction: 'Set password for natasha',
         instructionKo: 'natasha 사용자의 비밀번호를 설정하시오.',
-        command: 'echo flectrag | passwd natasha --stdin'
+        command: 'echo flectrag | passwd --stdin natasha'
       },
       {
         id: 6,
         instruction: 'Set password for harry',
         instructionKo: 'harry 사용자의 비밀번호를 설정하시오.',
-        command: 'echo flectrag | passwd harry --stdin'
+        command: 'echo flectrag | passwd --stdin harry'
       },
       {
         id: 7,
         instruction: 'Set password for sarah',
         instructionKo: 'sarah 사용자의 비밀번호를 설정하시오.',
-        command: 'echo flectrag | passwd sarah --stdin'
+        command: 'echo flectrag | passwd --stdin sarah'
       }
     ]
   },
@@ -278,7 +278,7 @@ export const problems: Problem[] = [
         id: 2,
         instruction: 'Set password for manalo',
         instructionKo: 'manalo 사용자의 비밀번호를 설정하시오.',
-        command: 'echo flectrag | passwd manalo --stdin'
+        command: 'echo flectrag | passwd --stdin manalo'
       }
     ]
   },
@@ -634,7 +634,7 @@ gpgcheck = 0`
         id: 3,
         instruction: 'Locate "devops.txt" in /home/student owned by "punit" and copy to /data/question3-files',
         instructionKo: '/home/student에서 "punit" 소유의 "devops.txt"를 찾아 /data/question3-files로 복사하시오.',
-        command: 'find /home/student -name devops.txt -user punit -exec cp -pv {} /data/question3-files/ \\;'
+        command: 'find /home/student -name devops.txt -user punit -exec cp -a {} /data/question3-files/ \\;'
       },
       {
         id: 4,
@@ -646,7 +646,7 @@ gpgcheck = 0`
         id: 5,
         instruction: 'Locate all files owned by "punit" and copy to /data/question4-files/flower',
         instructionKo: '"punit" 소유의 모든 파일을 찾아 /data/question4-files/flower 디렉토리로 복사하시오.',
-        command: 'find / -user punit -exec cp -rvf {} /data/question4-files/flower/ \\;'
+        command: 'find / -user punit -exec cp -a {} /data/question4-files/flower/ \\;'
       },
       {
         id: 6,
