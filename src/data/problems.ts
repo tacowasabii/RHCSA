@@ -256,6 +256,33 @@ export const problems: Problem[] = [
     ]
   },
   {
+    id: 'user-creation-manalo',
+    category: 'Server A',
+    title: 'Create User with Specific UID',
+    titleKo: '특정 UID로 사용자 생성',
+    description: `## Create a user \`manalo\` with user ID 3533. The password is \`flectrag\`.`,
+    descriptionKo: `## 사용자 ID가 3533인 사용자 \`manalo\`를 생성하라. 비밀번호는 \`flectrag\`.`,
+    scenarios: [
+      'User: manalo',
+      'UID: 3533',
+      'Password: flectrag'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create user manalo with UID 3533',
+        instructionKo: 'UID 3533을 가진 manalo 사용자를 생성하시오.',
+        command: 'useradd -u 3533 manalo'
+      },
+      {
+        id: 2,
+        instruction: 'Set password for manalo',
+        instructionKo: 'manalo 사용자의 비밀번호를 설정하시오.',
+        command: 'echo flectrag | passwd manalo --stdin'
+      }
+    ]
+  },
+  {
     id: 'httpd-installation',
     category: 'Server A',
     title: 'Install and Configure httpd',
@@ -542,6 +569,32 @@ gpgcheck = 0`
         instruction: 'Verify the crontab for user harry',
         instructionKo: 'harry 사용자의 크론탭 항목을 확인하시오.',
         command: 'crontab -u harry -l'
+      }
+    ]
+  },
+  {
+    id: 'find-files-by-owner',
+    category: 'Server A',
+    title: 'Find Files by Owner',
+    titleKo: '파일 찾기 (소유자별)',
+    description: `## Find all files owned by \`jacques\` and place a copy of them in the \`/root/findfiles\` directory.`,
+    descriptionKo: `## \`jacques\`가 소유한 모든 파일을 찾아 그 복사본을 \`/root/findfiles\` 디렉토리에 넣으세요.`,
+    scenarios: [
+      'Owner: jacques',
+      'Destination: /root/findfiles'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create the destination directory',
+        instructionKo: '대상 디렉토리를 생성하시오.',
+        command: 'mkdir /root/findfiles'
+      },
+      {
+        id: 2,
+        instruction: 'Find all files owned by jacques and copy them',
+        instructionKo: 'jacques가 소유한 모든 파일을 찾아 복사하시오.',
+        command: 'find / -user jacques -exec cp -a {} /root/findfiles \\;'
       }
     ]
   },
