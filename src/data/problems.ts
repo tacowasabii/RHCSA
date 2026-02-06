@@ -1615,5 +1615,207 @@ The \`tar\` (tape archive) command is essential for creating, listing, and extra
         command: 'tar -tf /root/backup.tar.bz2'
       }
     ]
+  },
+  {
+    id: 'lvm-lvextend',
+    category: 'Storage',
+    title: 'LVM - lvextend',
+    titleKo: 'LVM - 논리 볼륨 확장 (lvextend)',
+    description: `## Resize the logical volume \`vo\` filesystem to 230MiB.
+
+The contents of the filesystem must remain intact. Note that the exact partition size may not always match the requested size, so a size within the range of 213MiB to 243MiB is acceptable.`,
+    descriptionKo: `## 논리 볼륨 \`vo\`의 파일 시스템 크기를 230MiB로 조정하세요.
+
+파일 시스템의 내용은 그대로 유지되어야 합니다. 참고로, 파티션 크기가 요청된 크기와 정확히 일치하지 않는 경우가 많으므로, 213MiB에서 243MiB 범위의 크기는 허용됩니다.`,
+    scenarios: [
+      'Volume Group: myvol',
+      'Logical Volume: vo',
+      'Target Size: 230MiB (acceptable: 213~243MiB)',
+      'Filesystem contents must be preserved'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'List all logical volumes in all volume groups',
+        instructionKo: '모든 볼륨 그룹의 논리 볼륨을 확인하시오.',
+        command: 'lvscan'
+      },
+      {
+        id: 2,
+        instruction: 'Extend the logical volume to 230MiB',
+        instructionKo: '논리 볼륨을 230MiB로 확장하시오.',
+        command: 'lvextend -L 230M /dev/myvol/vo'
+      },
+      {
+        id: 3,
+        instruction: 'Resize the ext filesystem to match the volume',
+        instructionKo: 'ext 파일 시스템 크기를 볼륨에 맞게 조정하시오.',
+        command: 'resize2fs /dev/myvol/vo'
+      }
+    ]
+  },
+  {
+    id: 'swap-partition',
+    category: 'Storage',
+    title: 'Add Swap Partition',
+    titleKo: '스왑 파티션 추가',
+    description: `## Add an additional 512MiB swap partition to the system.
+
+The swap partition must be automatically mounted when the system boots. Do not delete or modify any existing swap partitions on the system.`,
+    descriptionKo: `## 시스템에 512MiB의 추가 스왑 파티션을 추가하세요.
+
+스왑 파티션은 시스템이 부팅될 때 자동으로 마운트되어야 합니다. 시스템에 있는 기존 스왑 파티션은 삭제하거나 변경하지 마세요.`,
+    scenarios: [
+      'Swap Size: 512MiB',
+      'Auto-mount on boot: /etc/fstab',
+      'Existing swap: do not modify'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Check existing partition layout with parted',
+        instructionKo: 'parted로 기존 파티션 레이아웃을 확인하시오.',
+        command: 'parted /dev/vdb unit mib print'
+      },
+      {
+        id: 2,
+        instruction: 'Create a new swap partition (512MiB)',
+        instructionKo: '512MiB 크기의 새 스왑 파티션을 생성하시오.',
+        command: 'parted /dev/vdb mkpart my-swap linux-swap 722MiB 1234MiB'
+      },
+      {
+        id: 3,
+        instruction: 'Verify the new partition',
+        instructionKo: '새 파티션을 확인하시오.',
+        command: 'parted /dev/vdb print'
+      },
+      {
+        id: 4,
+        instruction: 'Format the partition as swap',
+        instructionKo: '파티션을 스왑으로 포맷하시오.',
+        command: 'mkswap /dev/vdb3'
+      },
+      {
+        id: 5,
+        instruction: 'Add the swap entry to /etc/fstab',
+        instructionKo: '/etc/fstab에 스왑 항목을 추가하시오.',
+        command: 'vim /etc/fstab'
+      },
+      {
+        id: 6,
+        instruction: 'Add the following line to /etc/fstab',
+        instructionKo: '/etc/fstab에 다음 줄을 추가하시오.',
+        isMultiLine: true,
+        command: '/dev/vdb3 swap swap defaults 0 0'
+      },
+      {
+        id: 7,
+        instruction: 'Reload systemd daemon and activate swap',
+        instructionKo: 'systemd 데몬을 리로드하고 스왑을 활성화하시오.',
+        command: 'systemctl daemon-reload && swapon -a'
+      },
+      {
+        id: 8,
+        instruction: 'Verify the swap is active',
+        instructionKo: '스왑이 활성화되었는지 확인하시오.',
+        command: 'swapon --show'
+      }
+    ]
+  },
+  {
+    id: 'lvm-lvcreate',
+    category: 'Storage',
+    title: 'LVM - lvcreate',
+    titleKo: 'LVM - 논리 볼륨 생성 (lvcreate)',
+    description: `## Create a logical volume named \`qa\` in the \`qagroup\` volume group with a size of 60 extents.
+
+- The extent block size in the \`qagroup\` volume group must be 16MiB.
+- Format the new logical volume with the \`vfat\` filesystem.
+- Configure it to automatically mount at \`/mnt/qa\` on system boot.
+
+> 60 PEs x 16MiB = 960MiB — the PV size must be larger than 960MiB.`,
+    descriptionKo: `## \`qa\`라는 이름의 논리 볼륨을 \`qagroup\` 볼륨 그룹에 생성하고, 크기는 60개의 익스텐트 블록으로 설정하세요.
+
+- \`qagroup\` 볼륨 그룹 내 논리 볼륨의 익스텐트 블록 크기는 16MiB여야 합니다.
+- 새 논리 볼륨을 \`vfat\` 파일 시스템으로 포맷하고, 시스템 부팅 시 \`/mnt/qa\`에 자동으로 마운트되도록 설정하세요.
+
+> 60PEs x 16MiB = 960MiB — PV 크기는 960MiB보다 커야 합니다. (넉넉히 잡아주도록)`,
+    scenarios: [
+      'Volume Group: qagroup',
+      'Logical Volume: qa',
+      'Extent Size: 16MiB',
+      'Extents: 60 (= 960MiB)',
+      'Filesystem: vfat',
+      'Mount Point: /mnt/qa'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Check existing partition layout for start position',
+        instructionKo: '시작 위치 확인을 위해 기존 파티션 레이아웃을 확인하시오.',
+        command: 'parted /dev/vdb unit mib print'
+      },
+      {
+        id: 2,
+        instruction: 'Create a partition for the physical volume',
+        instructionKo: '물리 볼륨용 파티션을 생성하시오.',
+        command: 'parted /dev/vdb mkpart primary 1235mib 2500mib'
+      },
+      {
+        id: 3,
+        instruction: 'Create a physical volume',
+        instructionKo: '물리 볼륨(PV)을 생성하시오.',
+        command: 'pvcreate /dev/vdb4'
+      },
+      {
+        id: 4,
+        instruction: 'Create a volume group with 16MiB extent size',
+        instructionKo: '익스텐트 크기 16MiB로 볼륨 그룹을 생성하시오.',
+        command: 'vgcreate qagroup -s 16M /dev/vdb4'
+      },
+      {
+        id: 5,
+        instruction: 'Create a logical volume with 60 extents',
+        instructionKo: '60개의 익스텐트로 논리 볼륨을 생성하시오.',
+        command: 'lvcreate -n qa -l 60 qagroup'
+      },
+      {
+        id: 6,
+        instruction: 'Format the logical volume with vfat filesystem',
+        instructionKo: '논리 볼륨을 vfat 파일 시스템으로 포맷하시오.',
+        command: 'mkfs.vfat /dev/qagroup/qa'
+      },
+      {
+        id: 7,
+        instruction: 'Create the mount point directory',
+        instructionKo: '마운트 포인트 디렉토리를 생성하시오.',
+        command: 'mkdir /mnt/qa'
+      },
+      {
+        id: 8,
+        instruction: 'Add the mount entry to /etc/fstab',
+        instructionKo: '/etc/fstab에 마운트 항목을 추가하시오.',
+        command: 'vim /etc/fstab'
+      },
+      {
+        id: 9,
+        instruction: 'Add the following line to /etc/fstab',
+        instructionKo: '/etc/fstab에 다음 줄을 추가하시오.',
+        isMultiLine: true,
+        command: '/dev/qagroup/qa /mnt/qa vfat defaults 0 0'
+      },
+      {
+        id: 10,
+        instruction: 'Reload systemd daemon and mount',
+        instructionKo: 'systemd 데몬을 리로드하고 마운트하시오.',
+        command: 'systemctl daemon-reload && mount /mnt/qa'
+      },
+      {
+        id: 11,
+        instruction: 'Verify the mount',
+        instructionKo: '마운트를 확인하시오.',
+        command: 'mount | grep /mnt/qa'
+      }
+    ]
   }
 ];
