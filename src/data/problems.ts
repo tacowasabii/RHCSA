@@ -1412,5 +1412,32 @@ The \`tar\` (tape archive) command is essential for creating, listing, and extra
         command: 'tar jxvf /root/test2.tar.bz2'
       }
     ]
+  },
+  {
+    id: 'tar-backup-bzip2',
+    category: 'File Management',
+    title: 'Create Bzip2 Archive',
+    titleKo: '아카이브 생성 (bzip2)',
+    description: `## Create a tar archive containing the contents of \`/usr/local\`, compress it with bzip2, and save it as \`/root/backup.tar.bz2\`.`,
+    descriptionKo: `## \`/usr/local\`의 내용을 포함하는 tar 아카이브를 생성하고, 이를 bzip2로 압축하여 \`/root/backup.tar.bz2\`로 저장하세요.`,
+    scenarios: [
+      'Source: /usr/local',
+      'Destination: /root/backup.tar.bz2',
+      'Compression: bzip2'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create a bzip2 compressed tar archive of /usr/local',
+        instructionKo: '/usr/local의 bzip2 압축 tar 아카이브를 생성하시오.',
+        command: 'tar -cvjf /root/backup.tar.bz2 /usr/local'
+      },
+      {
+        id: 2,
+        instruction: 'Verify the archive contents',
+        instructionKo: '아카이브 내용을 확인하시오.',
+        command: 'tar -tf /root/backup.tar.bz2'
+      }
+    ]
   }
 ];
