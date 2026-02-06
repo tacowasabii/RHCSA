@@ -185,6 +185,77 @@ export const problems: Problem[] = [
     ]
   },
   {
+    id: 'user-account-management',
+    category: 'Server A',
+    title: 'User Account Management',
+    titleKo: '사용자 계정 관리',
+    description: `## Create users and groups as follows:
+
+- Create a group called \`sysmgrs\`
+- Create user \`natasha\` with \`sysmgrs\` as a secondary group
+- Create user \`harry\` with \`sysmgrs\` as a secondary group
+- Create user \`sarah\` who cannot access an interactive shell and is not a member of \`sysmgrs\`
+- Set the password for \`natasha\`, \`harry\`, and \`sarah\` to \`flectrag\``,
+    descriptionKo: `## 아래와 같이 사용자/그룹 생성을 하라.
+
+- \`sysmgrs\`라는 그룹을 생성하세요.
+- \`natasha\` 사용자를 생성하고, 보조 그룹으로 \`sysmgrs\`에 속하게 하세요.
+- \`harry\` 사용자를 생성하고, 보조 그룹으로 \`sysmgrs\`에 속하게 하세요.
+- \`sarah\` 사용자는 시스템에서 상호작용 shell에 접근할 수 없으며, \`sysmgrs\` 그룹의 구성원이 아닙니다.
+- \`natasha\`, \`harry\`, \`sarah\`의 비밀번호는 모두 \`flectrag\`로 설정하세요.`,
+    scenarios: [
+      'Group: sysmgrs',
+      'User natasha: secondary group sysmgrs',
+      'User harry: secondary group sysmgrs',
+      'User sarah: nologin shell, no group',
+      'Password for all: flectrag'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Create the sysmgrs group',
+        instructionKo: 'sysmgrs 그룹을 생성하시오.',
+        command: 'groupadd sysmgrs'
+      },
+      {
+        id: 2,
+        instruction: 'Create user natasha with sysmgrs as secondary group',
+        instructionKo: 'natasha 사용자를 생성하고 sysmgrs를 보조 그룹으로 설정하시오.',
+        command: 'useradd -G sysmgrs natasha'
+      },
+      {
+        id: 3,
+        instruction: 'Create user harry with sysmgrs as secondary group',
+        instructionKo: 'harry 사용자를 생성하고 sysmgrs를 보조 그룹으로 설정하시오.',
+        command: 'useradd -G sysmgrs harry'
+      },
+      {
+        id: 4,
+        instruction: 'Create user sarah with non-interactive shell',
+        instructionKo: 'sarah 사용자를 비대화형 쉘로 생성하시오.',
+        command: 'useradd -s /usr/sbin/nologin sarah'
+      },
+      {
+        id: 5,
+        instruction: 'Set password for natasha',
+        instructionKo: 'natasha 사용자의 비밀번호를 설정하시오.',
+        command: 'echo flectrag | passwd natasha --stdin'
+      },
+      {
+        id: 6,
+        instruction: 'Set password for harry',
+        instructionKo: 'harry 사용자의 비밀번호를 설정하시오.',
+        command: 'echo flectrag | passwd harry --stdin'
+      },
+      {
+        id: 7,
+        instruction: 'Set password for sarah',
+        instructionKo: 'sarah 사용자의 비밀번호를 설정하시오.',
+        command: 'echo flectrag | passwd sarah --stdin'
+      }
+    ]
+  },
+  {
     id: 'httpd-installation',
     category: 'Server A',
     title: 'Install and Configure httpd',
