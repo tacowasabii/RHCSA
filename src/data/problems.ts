@@ -1817,5 +1817,56 @@ The swap partition must be automatically mounted when the system boots. Do not d
         command: 'mount | grep /mnt/qa'
       }
     ]
+  },
+  {
+    id: 'tuned-profile',
+    category: 'Server A',
+    title: 'Configure Tuned Profile',
+    titleKo: 'tuned 프로파일 설정',
+    description: `## Select the recommended tuned profile for the system and set it as the default.`,
+    descriptionKo: `## 시스템에 권장되는 tuned 프로파일을 선택하고 기본 설정으로 설정하세요.`,
+    scenarios: [
+      'Service: tuned',
+      'Recommended Profile: tuned-adm recommend',
+      'Apply: tuned-adm profile'
+    ],
+    steps: [
+      {
+        id: 1,
+        instruction: 'Install the tuned package',
+        instructionKo: 'tuned 패키지를 설치하시오.',
+        command: 'dnf install -y tuned'
+      },
+      {
+        id: 2,
+        instruction: 'Enable and start the tuned service',
+        instructionKo: 'tuned 서비스를 활성화하고 시작하시오.',
+        command: 'systemctl enable --now tuned'
+      },
+      {
+        id: 3,
+        instruction: 'Check the current active profile',
+        instructionKo: '현재 활성화된 프로파일을 확인하시오.',
+        command: 'tuned-adm active'
+      },
+      {
+        id: 4,
+        instruction: 'Check the recommended profile',
+        instructionKo: '권장 프로파일을 확인하시오.',
+        command: 'tuned-adm recommend'
+      },
+      {
+        id: 5,
+        instruction: 'Apply the recommended profile (e.g. virtual-guest)',
+        instructionKo: '권장 프로파일(예: virtual-guest)을 적용하시오.',
+        command: 'tuned-adm profile virtual-guest'
+      },
+      {
+        id: 6,
+        instruction: 'Verify the active profile has changed',
+        instructionKo: '활성 프로파일이 변경되었는지 확인하시오.',
+        command: 'tuned-adm active'
+      }
+    ]
   }
 ];
