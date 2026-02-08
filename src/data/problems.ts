@@ -30,18 +30,24 @@ export const problems: Problem[] = [
       },
       {
         id: 3,
+        instruction: 'List all network connections',
+        instructionKo: '모든 네트워크 연결 정보를 조회하시오.',
+        command: 'nmcli con show'
+      },
+      {
+        id: 4,
         instruction: 'Configure IPv4 settings with autoconnect',
         instructionKo: 'autoconnect 및 IPv4 설정을 구성하시오.',
         command: 'nmcli con modify "Wired connection 1" autoconnect yes ipv4.method manual ipv4.addresses 192.168.1.10/24 ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.1'
       },
       {
-        id: 4,
+        id: 5,
         instruction: 'Bring up the connection to apply changes',
         instructionKo: '변경 사항을 적용하기 위해 연결을 활성화하시오.',
         command: 'nmcli con up "Wired connection 1"'
       },
       {
-        id: 5,
+        id: 6,
         instruction: 'Test connectivity to the gateway',
         instructionKo: '게이트웨이와의 연결을 테스트하시오.',
         command: 'ping 192.168.1.1'
@@ -155,25 +161,25 @@ export const problems: Problem[] = [
         id: 3,
         instruction: 'Create user punit',
         instructionKo: '요구사항에 맞춰 punit 사용자를 생성하시오.',
-        command: 'useradd -G admin -u 1234 -s /bin/bash -d /home/ocp-cluster -c "For OCP Cluster" punit'
+        command: 'useradd -G admin -u 1234 -c "For OCP Cluster" -d /home/ocp-cluster -s /bin/bash punit'
       },
       {
         id: 4,
         instruction: 'Create user rajan',
         instructionKo: '요구사항에 맞춰 rajan 사용자를 생성하시오.',
-        command: 'useradd -u 1235 -s /bin/sh -d /home/database-cluster -c "For Database Cluster" rajan'
+        command: 'useradd -u 1235 -c "For Database Cluster" -d /home/database-cluster -s /bin/sh rajan'
       },
       {
         id: 5,
         instruction: 'Create user harry',
         instructionKo: '요구사항에 맞춰 harry 사용자를 생성하시오.',
-        command: 'useradd -G devops-wala -u 1334 -d /home/harry -s /bin/bash -c "For OCP Cluster" harry'
+        command: 'useradd -G devops-wala -u 1334 -c "For OCP Cluster" -d /home/harry -s /bin/bash harry'
       },
       {
         id: 6,
         instruction: 'Create user peter',
         instructionKo: '요구사항에 맞춰 peter 사용자를 생성하시오.',
-        command: 'useradd -G devops-wala -u 1335 -d /home/peter -s /bin/sh -c "For Database Cluster" peter'
+        command: 'useradd -G devops-wala -u 1335 -c "For Database Cluster" -d /home/peter -s /bin/sh peter'
       },
       {
         id: 7,
