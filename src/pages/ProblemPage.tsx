@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { problems } from '../data/problems';
 import { ArrowLeft, CheckCircle, AlertCircle, Eye, EyeOff, Terminal, RotateCcw } from 'lucide-react';
@@ -19,6 +19,10 @@ const ProblemPage: React.FC = () => {
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [errorSteps, setErrorSteps] = useState<Set<number>>(new Set());
   const [showAnswerSteps, setShowAnswerSteps] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!problem) {
     return (
@@ -97,7 +101,7 @@ const ProblemPage: React.FC = () => {
       <header className="border-b border-gray-200 bg-white/80 backdrop-blur sticky top-0 z-50 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(-1)}
             className="flex items-center text-slate-500 hover:text-blue-600 transition-colors"
           >
             <ArrowLeft size={20} className="mr-2" />
@@ -312,7 +316,7 @@ const ProblemPage: React.FC = () => {
               </div>
               <h2 className="text-3xl font-bold text-emerald-900">Completed!</h2>
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate(-1)}
                 className="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-colors shadow-lg shadow-emerald-200"
               >
                 Return to Dashboard
