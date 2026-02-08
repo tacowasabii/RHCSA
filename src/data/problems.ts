@@ -737,7 +737,7 @@ gpgcheck = 0`
         instruction: 'Create the script for Question 5 (/usr/local/bin/question5-find.sh)',
         instructionKo: '/usr/local/bin/question5-find.sh 스크립트를 작성하시오.',
         isMultiLine: true,
-        command: 'find /usr/share/ -type f -size -1M > /root/question5-find-output.txt'
+        command: 'find /usr/share -type f -size -1M > /root/question5-find-output.txt'
       },
       {
         id: 2,
