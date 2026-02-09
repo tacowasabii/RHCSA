@@ -425,9 +425,9 @@ gpgcheck = 0`
       },
       {
         id: 2,
-        instruction: 'Check the SELinux file context of /var/www/html/',
-        instructionKo: '/var/www/html/ 디렉토리의 SELinux 파일 컨텍스트를 확인하시오.',
-        command: 'ls -Z /var/www/html/'
+        instruction: 'Check the SELinux file context of /var/www/html',
+        instructionKo: '/var/www/html 디렉토리의 SELinux 파일 컨텍스트를 확인하시오.',
+        command: 'ls -Z /var/www/html'
       },
       {
         id: 3,
@@ -695,7 +695,7 @@ gpgcheck = 0`
         id: 3,
         instruction: 'Locate "devops.txt" in /home/student owned by "punit" and copy to /data/question3-files',
         instructionKo: '/home/student에서 "punit" 소유의 "devops.txt"를 찾아 /data/question3-files로 복사하시오.',
-        command: 'find /home/student -name devops.txt -user punit -exec cp -a {} /data/question3-files/ \\;'
+        command: 'find /home/student -name devops.txt -user punit -exec cp -a {} /data/question3-files \\;'
       },
       {
         id: 4,
@@ -707,13 +707,13 @@ gpgcheck = 0`
         id: 5,
         instruction: 'Locate all files owned by "punit" and copy to /data/question4-files/flower',
         instructionKo: '"punit" 소유의 모든 파일을 찾아 /data/question4-files/flower 디렉토리로 복사하시오.',
-        command: 'find / -user punit -exec cp -a {} /data/question4-files/flower/ \\;'
+        command: 'find / -user punit -exec cp -a {} /data/question4-files/flower \\;'
       },
       {
         id: 6,
         instruction: 'Verify the copied files',
         instructionKo: '복사된 파일들을 확인하시오.',
-        command: 'ls -latr /data/question4-files/flower/'
+        command: 'ls -latr /data/question4-files/flower'
       }
     ]
   },
@@ -1406,7 +1406,7 @@ Without modifying the contents of this file, build an image named \`pdf\`.`,
         id: 4,
         instruction: 'Create the systemd user directory and move the service file',
         instructionKo: 'systemd 사용자 디렉토리를 생성하고 서비스 파일을 이동하시오.',
-        command: 'mkdir -p ~/.config/systemd/user && mv ~/container-ascii2pdf.service ~/.config/systemd/user/'
+        command: 'mkdir -p ~/.config/systemd/user && mv ~/container-ascii2pdf.service ~/.config/systemd/user'
       },
       {
         id: 5,
@@ -1538,19 +1538,19 @@ Without modifying the contents of this file, build an image named \`pdf\`.`,
         id: 2,
         instruction: 'Change the group ownership to sysmgrs',
         instructionKo: '디렉토리의 그룹 소유권을 sysmgrs로 변경하시오.',
-        command: 'chown :sysmgrs /home/managers/'
+        command: 'chown :sysmgrs /home/managers'
       },
       {
         id: 3,
         instruction: 'Set permissions with SGID (2770)',
         instructionKo: 'SGID를 포함한 권한(2770)을 설정하시오.',
-        command: 'chmod 2770 /home/managers/'
+        command: 'chmod 2770 /home/managers'
       },
       {
         id: 4,
         instruction: 'Verify directory permissions and SGID',
         instructionKo: '디렉토리의 권한과 SGID 설정을 확인하시오.',
-        command: 'ls -ld /home/managers/'
+        command: 'ls -ld /home/managers'
       }
     ]
   },
