@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { problems } from '../data/problems';
-import { ArrowLeft, CheckCircle, AlertCircle, Eye, EyeOff, Terminal, RotateCcw } from 'lucide-react';
+import { ArrowLeft, CheckCircle, AlertCircle, Eye, EyeOff, Terminal, RotateCcw, BookOpen, Code } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -19,6 +19,7 @@ const ProblemPage: React.FC = () => {
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [errorSteps, setErrorSteps] = useState<Set<number>>(new Set());
   const [showAnswerSteps, setShowAnswerSteps] = useState<Set<number>>(new Set());
+  const [practiceMode, setPracticeMode] = useState<'guided' | 'command-only'>('guided');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -179,6 +180,32 @@ const ProblemPage: React.FC = () => {
 
         {/* Interactive Terminal Steps */}
         <div className="w-full lg:max-w-[700px] space-y-6">
+          {/* Practice Mode Toggle */}
+          <div className="bg-white border border-gray-200 rounded-xl p-2 flex gap-2 shadow-sm">
+            <button
+              onClick={() => setPracticeMode('guided')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                practiceMode === 'guided'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-500 hover:bg-gray-50'
+              }`}
+            >
+              <BookOpen size={16} />
+              Guided
+            </button>
+            <button
+              onClick={() => setPracticeMode('command-only')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                practiceMode === 'command-only'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-500 hover:bg-gray-50'
+              }`}
+            >
+              <Code size={16} />
+              Command Only
+            </button>
+          </div>
+
           {problem.steps.map((step, index) => {
             const isCompleted = completedSteps.has(index);
             const hasError = errorSteps.has(index);
@@ -195,23 +222,29 @@ const ProblemPage: React.FC = () => {
                 `}>
 
                   {/* Step Header */}
-                  <div className="px-6 py-4 border-b border-gray-100 flex items-start justify-between bg-gray-50/50">
-                     <div className="flex items-start">
+                  <div className={`px-6 ${practiceMode === 'guided' ? 'py-4' : 'py-2.5'} border-b border-gray-100 flex ${practiceMode === 'guided' ? 'items-start' : 'items-center'} justify-between bg-gray-50/50`}>
+                     <div className={`flex ${practiceMode === 'guided' ? 'items-start' : 'items-center'}`}>
                        <div className={`mt-0.5 mr-4 shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
                          ${isCompleted ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}
                        `}>
                          {isCompleted ? <CheckCircle size={14} /> : index + 1}
                        </div>
-                       <div>
-                         <h3 className={`font-medium ${isCompleted ? 'text-slate-500' : 'text-slate-900'}`}>
-                           {step.instruction}
-                         </h3>
-                         {step.instructionKo && (
-                           <p className={`text-sm mt-0.5 ${isCompleted ? 'text-slate-400' : 'text-slate-600'}`}>
-                             {step.instructionKo}
-                           </p>
-                         )}
-                       </div>
+                       {practiceMode === 'guided' ? (
+                         <div>
+                           <h3 className={`font-medium ${isCompleted ? 'text-slate-500' : 'text-slate-900'}`}>
+                             {step.instruction}
+                           </h3>
+                           {step.instructionKo && (
+                             <p className={`text-sm mt-0.5 ${isCompleted ? 'text-slate-400' : 'text-slate-600'}`}>
+                               {step.instructionKo}
+                             </p>
+                           )}
+                         </div>
+                       ) : (
+                         <span className={`text-sm font-mono ${isCompleted ? 'text-slate-400' : 'text-slate-500'}`}>
+                           Step {index + 1}
+                         </span>
+                       )}
                      </div>
                   </div>
 
